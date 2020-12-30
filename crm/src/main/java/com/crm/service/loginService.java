@@ -1,15 +1,21 @@
 package com.crm.service;
 
 import java.sql. * ;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.crm.utility.NVL;
+import com.crm.utility.Utility;
 import com.crm.utility.getMenu;
 import com.crm.utility.getParaValue;
 
 public class loginService {
-  public String login(Connection con, String input) throws JSONException,
+  public static String login(Connection con, String input) throws JSONException,
   ClassNotFoundException,
   SQLException {
     JSONObject jObject = new JSONObject(input);
@@ -32,7 +38,7 @@ public class loginService {
       jOutput.put("MESSAGE", "Please enter your password.");
     } else {
       ResultSet rs = null;
-      String ls_query = "SELECT COMP_CD,USER_ID,MENU_RIGHRS,ACTIVE_STATUS,BLOCK_STATUS,USER_PWD,FAILED_CNT FROM USER_MST WHERE USER_ID = ?";
+      String ls_query = "SELECT COMP_CD,USER_ID,ACTIVE_STATUS,BLOCK_STATUS,USER_PWD,FAILED_CNT,USER_PHOTO FROM USER_MST WHERE USER_ID = ?";
       PreparedStatement ps = null;
       ps = con.prepareStatement(ls_query);
       ps.setString(1, username.toUpperCase());
@@ -40,21 +46,23 @@ public class loginService {
 
       String ls_comp_cd = null;
       String ls_userid = null;
-      String ls_menu = null;
       String activeStatus = null;
       String blockStatus = null;
       String user_pwd = null;
       String ls_para = null;
+      String ls_user_photo = null;
       int failed_cnt = 0;      
       try {
         if (rs.next()) {
           ls_comp_cd = rs.getString("COMP_CD");
           ls_userid = rs.getString("USER_ID");
-          ls_menu = rs.getString("MENU_RIGHRS");
           activeStatus = rs.getString("ACTIVE_STATUS");
           blockStatus = rs.getString("BLOCK_STATUS");
           user_pwd = rs.getString("USER_PWD");
           failed_cnt = rs.getInt("FAILED_CNT");
+          ls_user_photo = NVL.StringNvl(rs.getString("USER_PHOTO"));
+          
+          
 
           ls_para = getParaValue.getPara(con, 1);
           int block_cnt = Integer.parseInt(ls_para);
@@ -107,16 +115,30 @@ public class loginService {
               e.printStackTrace();
               System.out.println("Login Failed Count : " + e);
             }
+            
+            JSONObject loginJson = new JSONObject();
+            loginJson.put("COMP_CD",ls_comp_cd);
+            loginJson.put("USER_ID",ls_userid);
+            loginJson.put("ACTIVITY_CD","");
+            loginJson.put("LOGIN_TYPE","L");
+//            loginJson.put("LOG_IN_OUT_DT",new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString());
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()).toString());
+            String ls_activity_cd = loginAuditrail(con, loginJson.toString(), "L");
+            
             menuGrant = getMenu.getMenu(con, username);
             jOutput.put("STATUS_CD", "0");
             jOutput.put("MESSAGE", "SUCESS");
             JSONObject jObj1 = new JSONObject();
 
             jObj1.put("COMP_CD", ls_comp_cd);
-            jObj1.put("USER_ID", ls_userid);
+            jObj1.put("USER_ID", ls_userid);            
             jObj1.put("MENU", menuGrant);
+            jObj1.put("ACTIVITY_CD", ls_activity_cd);
+            jObj1.put("USER_PHOTO", ls_user_photo);
             jResponse.put(jObj1);
             jOutput.put("RESPONSE", jResponse);
+            
+            
           }
 
         } else {
@@ -132,4 +154,96 @@ public class loginService {
     String ls_output = jOutput.toString();
     return ls_output;
   }
+  
+  public static String loginAuditrail(Connection con, String ls_request,String loginType) {
+      String response = "";
+      Statement stmt = null;
+      int ExistingCnt = 0;
+      String ACTIVITY_CD = null; 
+      System.out.println("login "+ls_request);
+      try {
+
+          JSONObject jin = new JSONObject(ls_request);
+                    
+          String COMP_CD = jin.getString("COMP_CD");
+          String USER_ID = jin.getString("USER_ID");
+              
+          
+          if (loginType.equals("L")) {
+        	   ACTIVITY_CD = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()).replace(".","");
+          } else {
+        	   ACTIVITY_CD = jin.getString("ACTIVITY_CD"); 
+          }
+                    
+          String LOGIN_TYPE = jin.getString("LOGIN_TYPE");
+          int tran_cd = getParaValue.getMaxTranCd(con, "LOGIN_AUD_MST", "TRAN_CD");
+                                             
+          String extingEmp = "SELECT COUNT(*) AS EMP_CNT FROM USER_MST WHERE COMP_CD = '"+COMP_CD+"' AND USER_ID = '"+ USER_ID+"' AND IS_DELETE = 'N'";
+          	System.out.println(extingEmp);
+          stmt = con.createStatement();
+          ResultSet empResultSet = stmt.executeQuery(extingEmp);
+
+          while (empResultSet.next()) {
+              ExistingCnt = empResultSet.getInt("EMP_CNT");
+          }
+          System.out.println(ExistingCnt);
+          if (ExistingCnt <= 0) {
+          	 JSONObject jOutPut = new JSONObject();
+
+               jOutPut.put("STATUS_CD", "99");
+               jOutPut.put("MESSAGE", "User ID " + USER_ID + " Not Exist.");
+               response = jOutPut.toString();
+               System.out.println(response);
+          } else {
+              JSONObject jOut = new JSONObject();
+              String sql = "INSERT INTO login_aud_mst(COMP_CD,TRAN_CD,USER_ID,ACTIVITY_CD,LOGIN_TYPE)VALUES (?,?,?,?,?)";
+              PreparedStatement preparedStatement = con.prepareStatement(sql);
+              
+              preparedStatement.setString(1,COMP_CD);
+              preparedStatement.setInt(2,tran_cd);
+              preparedStatement.setString(3,USER_ID);
+              preparedStatement.setString(4,ACTIVITY_CD);
+              preparedStatement.setString(5,LOGIN_TYPE);              
+//              preparedStatement.setDate(6,(java.sql.Date) LOG_IN_OUT_DT);
+              
+              int row = preparedStatement.executeUpdate();
+
+              if (row == 0) {
+                  con.rollback();
+              } else {
+                  con.commit();
+              }
+
+              JSONObject jOutPut = new JSONObject();
+
+              jOutPut.put("STATUS_CD", "0");
+              jOutPut.put("MESSAGE", "User ID " + USER_ID + " Login Log Sucessfully Created.");
+              response = jOutPut.toString();
+          }
+      } catch (Exception e) {
+    	  e.printStackTrace();
+          Utility.PrintMessage("Error in Login Audit : " + e);
+          response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+      } finally {
+          try {
+              stmt.close();
+          } catch (Exception e2) {
+              // TODO: handle exception
+          }
+          try {
+              stmt.close();
+          } catch (Exception e2) {
+              // TODO: handle exception
+          }
+          try {
+              
+          } catch (Exception e2) {
+              // TODO: handle exception
+          }
+      }
+	return ACTIVITY_CD.replace(".","");
+  }
+
+  
+  
 }

@@ -25,8 +25,36 @@ public class getParaValue {
       ls_para = "";
       System.out.println("Get Para Error : " + e);
       e.printStackTrace();
-    }
+    } finally {
+    	rs.close();
+    }    
     return ls_para;
   }
+  public static int getMaxTranCd(Connection con,String tableName,String columnName) throws SQLException {
+	  String ls_para = null;
+	  int maxTranCd = 0;
+	  ResultSet rs = null;
+	  try {
+	      String ls_query = "SELECT MAX("+columnName+") AS MAXCD FROM "+tableName;
+	      PreparedStatement ps = null;
+	      ps = con.prepareStatement(ls_query);	      
+	      rs = ps.executeQuery();
 
+	      if (rs.next()) {
+	    	  maxTranCd = rs.getInt("MAXCD");
+	      }
+	    } catch(Exception e) {
+	      ls_para = "";
+	      System.out.println("Get Para Error : " + e);
+	      e.printStackTrace();
+	    } finally {
+	    	rs.close();
+	    }    
+	  if (maxTranCd > 0) {
+		  maxTranCd = maxTranCd +1;
+	  } else {
+		  maxTranCd = 1;
+	  }
+	  return maxTranCd;
+  }
 }

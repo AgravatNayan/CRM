@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.crm.utility.Utility;
+
 public class branchService {
 	public static JSONObject getBranchData(Connection con, String requestData) throws JSONException,
 	  ClassNotFoundException,
@@ -30,27 +32,12 @@ public class branchService {
 	    JSONObject request = new JSONObject(requestData);
 	    JSONObject jError = new JSONObject();
 
-	    String ls_action = request.getString("ACTION");
+	    String ls_req_comp_cd = "132";
 	    String ls_username = request.getString("USERNAME");
 	    String ls_req_ip = request.getString("REQUEST_IP");
 	    
-	    if (ls_username.equals(null)) {
-	      jError.put("STATUS_CD", "999");
-	      jError.put("RESPONSE", "[]");
-	      jError.put("MESSAGE", "User Id Not Found");
-
-	      mainObject = jError;
-	    } else {
-	      if (ls_req_ip.equals(null)) {
-	        jError.put("STATUS_CD", "999");
-	        jError.put("RESPONSE", "[]");
-	        jError.put("MESSAGE", "Request IP Not Found.");
-
-	        mainObject = jError;
-	      } else {
-	        if (ls_action.equals("BRANCH_LIST")) {
 	          try {
-	            String ls_query = "SELECT COMP_CD,BRANCH_CD,BRANCH_NM,BRANCH_OPENING_DT,BRANCH_MANAGER,BRANCH_CONTACT,BRANCH_EMAIL FROM BRANCH_MST WHERE COMP_CD='132'";
+	            String ls_query = "SELECT COMP_CD,BRANCH_CD,BRANCH_NM,BRANCH_OPENING_DT,BRANCH_MANAGER,BRANCH_CONTACT,BRANCH_EMAIL FROM BRANCH_MST WHERE COMP_CD='"+ls_req_comp_cd+"'";
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);
@@ -82,18 +69,12 @@ public class branchService {
 	            mainObject.put("RESPONSE", jArray);
 	          } catch(Exception e) {	            
 	            System.out.println("Get Branch Error : " + e);
-	            e.printStackTrace();
+	            Utility.PrintMessage("Error in GetMax Employee : " + e);
+	            
+	            mainObject.put("STATUS_CD", "99");
+	            mainObject.put("MESSAGE", "Something went to wrong,Please try after some time.");	            	            	           
 	          }
-
-	        } else {
-	          jError.put("STATUS_CD", "999");
-	          jError.put("RESPONSE", "[]");
-	          jError.put("MESSAGE", "Drop Down value not found.");
-
-	          mainObject = jError;
-	        }
-	      }
-	    }
+	       
 	    return mainObject;
-	  }
+	}	 
 }

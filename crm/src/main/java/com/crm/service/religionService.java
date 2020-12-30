@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.crm.utility.Utility;
+
 public class religionService {
 	public static JSONObject getdropDwon(Connection con, String requestData) throws JSONException,
 	  ClassNotFoundException,
@@ -50,8 +52,12 @@ public class religionService {
 	            mainObject.put("RESPONSE", jArray);
 	          } catch(Exception e) {
 	            ll_id = 0;
-	            System.out.println("Get Religon Error : " + e);
-	            e.printStackTrace();
+	            
+	            System.out.println("Get Branch Error : " + e);
+	            Utility.PrintMessage("Error in GetMax Employee : " + e);
+	            
+	            mainObject.put("STATUS_CD", "99");
+	            mainObject.put("MESSAGE", "Something went to wrong,Please try after some time.");	            
 	          }	       
 	    return mainObject;
 	  }

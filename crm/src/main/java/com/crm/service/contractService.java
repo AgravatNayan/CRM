@@ -37,7 +37,7 @@ public class contractService {
 	    String ls_req_ip = request.getString("REQUEST_IP");
 	    
 	   try {
-	            String ls_query = "SELECT COMP_CD,BRANCH_CD,CONTARCT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM\r\n" + 
+	            String ls_query = "SELECT COMP_CD,CONTARCT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM\r\n" + 
 	            		"FROM CONTRACT_TYPE_MST WHERE CONTRACT_STATUS = 'Y'";
 	            	            
 	            Statement stmt = null;
@@ -45,8 +45,7 @@ public class contractService {
 	            rs = stmt.executeQuery(ls_query);
 
 	            while (rs.next()) {
-	            	ls_comp_cd=rs.getString("COMP_CD");
-        			ls_branch_cd=rs.getString("BRANCH_CD");
+	            	ls_comp_cd=rs.getString("COMP_CD");        			
         			ID=rs.getString("CONTARCT_ID");
         			ld_start_dt=rs.getString("CON_START_DT");
         			ld_end_dt=rs.getString("CON_END_DT");

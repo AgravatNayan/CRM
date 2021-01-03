@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.dropdown;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

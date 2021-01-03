@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.employee;
 
 import java.sql.Connection;
 import java.sql.Date;

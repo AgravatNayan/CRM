@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.insurance;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -471,7 +471,7 @@ public class insuranceService {
 		            }
 		            Date INSU_END_DT =null;
 		            if (jReuqest.getString("INSU_END_DT") == null || jReuqest.getString("INSU_END_DT").equals("")) {
-		            	INSU_START_DT = null;
+		            	INSU_END_DT = null;
 		            } else {
 		            	INSU_END_DT = Date.valueOf(jReuqest.getString("INSU_END_DT")); 
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
@@ -479,9 +479,9 @@ public class insuranceService {
 		            String INSU_STATUS =NVL.StringNvl(jReuqest.getString("INSU_STATUS"));
 		            Date INSU_INACTIVE_DT =null;
 		            if (jReuqest.getString("INSU_INACTIVE_DT") == null || jReuqest.getString("INSU_INACTIVE_DT").equals("")) {
-		            	INSU_START_DT = null;
+		            	INSU_INACTIVE_DT = null;
 		            } else {
-		            	INSU_END_DT = Date.valueOf(jReuqest.getString("INSU_INACTIVE_DT")); 
+		            	INSU_INACTIVE_DT = Date.valueOf(jReuqest.getString("INSU_INACTIVE_DT")); 
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 		            }
 		            String INSU_AGENCY =NVL.StringNvl(jReuqest.getString("INSU_AGENCY"));
@@ -513,7 +513,7 @@ public class insuranceService {
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 		            }
 		            
-		            	  	            	  	       
+		            System.out.println(INSU_START_DT);	  	            	  	       
 	  	            if (UPDATE_FLAG.equals("Y")) {
 	  	            	String updateEmployee = "UPDATE insurance_mst SET COMP_CD = ?,INSU_TYPE = ?, INSU_NAME = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?,INSU_INACTIVE_DT = ?, INSU_AGENCY = ?, INSU_AGENCY_ID = ?, INSU_CUST_NO = ?, INSU_PREMIUM = ?, INSU_DOC_POLICY = ?,LAST_MODIFIED_BY = ?, LAST_MODOFIED_IP = ?, LAST_MODIFIED_DT = ? WHERE COMP_CD = ? AND INSU_ID = ? AND IS_DELETE = ?";	
 	  	            	PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);	               

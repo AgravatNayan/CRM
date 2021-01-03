@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.shift;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +34,7 @@ public class shiftService {
             JSONArray jresponse = new JSONArray();
             JSONObject jobj = new JSONObject();
             jobj.put("USERNAME", jin.getString("USERNAME"));
-            jobj.put("CONTRACT_ID", maxID);
+            jobj.put("SHIFT_ID", maxID);
             jresponse.put(jobj);
             jOut.put("STATUS_CD", "0");
             jOut.put("RESPONSE", jresponse);
@@ -230,18 +231,18 @@ public class shiftService {
 	            	SHIFT_INACTIVE_DT = Date.valueOf(jReuqest.getString("SHIFT_INACTIVE_DT")); 
 	            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 	            }
-	            Date SHIFT_START_TIME = null;
+	            Time SHIFT_START_TIME = null;
 	            if (jReuqest.getString("SHIFT_START_TIME") == null || jReuqest.getString("SHIFT_START_TIME").equals("")) {
 	            	SHIFT_START_TIME = null;
 	            } else {
-	            	SHIFT_START_TIME = Date.valueOf(jReuqest.getString("SHIFT_START_TIME")); 
+	            	SHIFT_START_TIME = Time.valueOf(jReuqest.getString("SHIFT_START_TIME")); 
 	            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 	            }
-	            Date SHIFT_END_TIME = null;
+	            Time SHIFT_END_TIME = null;
 	            if (jReuqest.getString("SHIFT_END_TIME") == null || jReuqest.getString("SHIFT_END_TIME").equals("")) {
 	            	SHIFT_END_TIME = null;
 	            } else {
-	            	SHIFT_END_TIME = Date.valueOf(jReuqest.getString("SHIFT_END_TIME")); 
+	            	SHIFT_END_TIME = Time.valueOf(jReuqest.getString("SHIFT_END_TIME")); 
 	            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 	            }
 	            String REMARKS  = NVL.StringNvl(jReuqest.getString("REMARKS"));	            
@@ -273,8 +274,8 @@ public class shiftService {
                 preparedStatement.setString(3,SHIFT_NAME);
                 preparedStatement.setString(4,SHIFT_STATUS);
                 preparedStatement.setDate(5,SHIFT_INACTIVE_DT);
-                preparedStatement.setDate(6,SHIFT_START_TIME);
-                preparedStatement.setDate(7,SHIFT_END_TIME);
+                preparedStatement.setTime(6,SHIFT_START_TIME);
+                preparedStatement.setTime(7,SHIFT_END_TIME);
                 preparedStatement.setString(8,REMARKS);
 	            preparedStatement.setString(9,ENTERED_BY);
 	            preparedStatement.setString(10,ENTERED_IP);
@@ -297,7 +298,8 @@ public class shiftService {
                 jOutPut.put("MESSAGE", "Shift Type " + SHIFT_ID + " Sucessfully Created.");
                 response = jOutPut.toString();
 	            } catch (Exception e) {
-	            Utility.PrintMessage("Error in Create Shift Type : " + e);
+	            e.printStackTrace();
+	            Utility.PrintMessage("Error in Create Shift Type : " + e.getMessage());
 	            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
 	        } finally {
 	            try {
@@ -422,18 +424,18 @@ public class shiftService {
 		            	SHIFT_INACTIVE_DT = Date.valueOf(jReuqest.getString("SHIFT_INACTIVE_DT")); 
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 		            }
-		            Date SHIFT_START_TIME = null;
+		            Time SHIFT_START_TIME = null;
 		            if (jReuqest.getString("SHIFT_START_TIME") == null || jReuqest.getString("SHIFT_START_TIME").equals("")) {
 		            	SHIFT_START_TIME = null;
 		            } else {
-		            	SHIFT_START_TIME = Date.valueOf(jReuqest.getString("SHIFT_START_TIME")); 
+		            	SHIFT_START_TIME = Time.valueOf(jReuqest.getString("SHIFT_START_TIME")); 
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 		            }
-		            Date SHIFT_END_TIME = null;
+		            Time SHIFT_END_TIME = null;
 		            if (jReuqest.getString("SHIFT_END_TIME") == null || jReuqest.getString("SHIFT_END_TIME").equals("")) {
 		            	SHIFT_END_TIME = null;
 		            } else {
-		            	SHIFT_END_TIME = Date.valueOf(jReuqest.getString("SHIFT_END_TIME")); 
+		            	SHIFT_END_TIME = Time.valueOf(jReuqest.getString("SHIFT_END_TIME")); 
 		            		//	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
 		            }
 		            String REMARKS  = NVL.StringNvl(jReuqest.getString("REMARKS"));	            		            
@@ -454,8 +456,8 @@ public class shiftService {
 	  	                preparedStatement.setString(2,SHIFT_NAME);
 	  	                preparedStatement.setString(3,SHIFT_STATUS);
 	  	                preparedStatement.setDate(4,SHIFT_INACTIVE_DT);
-	  	                preparedStatement.setDate(5,SHIFT_START_TIME);
-	  	                preparedStatement.setDate(6,SHIFT_END_TIME);
+	  	                preparedStatement.setTime(5,SHIFT_START_TIME);
+	  	                preparedStatement.setTime(6,SHIFT_END_TIME);
 	  	                preparedStatement.setString(7,REMARKS);
 	  		            preparedStatement.setString(8,LAST_MODIFIED_BY);
 	  		            preparedStatement.setString(9,LAST_MODOFIED_IP);
@@ -485,8 +487,8 @@ public class shiftService {
 	  	                preparedStatement.setString(2,SHIFT_NAME);
 	  	                preparedStatement.setString(3,SHIFT_STATUS);
 	  	                preparedStatement.setDate(4,SHIFT_INACTIVE_DT);
-	  	                preparedStatement.setDate(5,SHIFT_START_TIME);
-	  	                preparedStatement.setDate(6,SHIFT_END_TIME);
+	  	                preparedStatement.setTime(5,SHIFT_START_TIME);
+	  	                preparedStatement.setTime(6,SHIFT_END_TIME);
 	  	                preparedStatement.setString(7,REMARKS);
 	  		            preparedStatement.setString(8,LAST_MODIFIED_BY);
 	  		            preparedStatement.setString(9,LAST_MODOFIED_IP);
@@ -511,6 +513,7 @@ public class shiftService {
 	  	            }	  	            	                        	               	               
 	            }                                                                                              
 	        } catch (Exception e) {
+	        	e.printStackTrace();
 	            Utility.PrintMessage("Error in Update Shift : " + e);
 	            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
 	        } finally {

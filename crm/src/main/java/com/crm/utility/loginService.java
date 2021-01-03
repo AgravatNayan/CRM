@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.utility;
 
 import java.sql. * ;
 import java.text.SimpleDateFormat;
@@ -8,11 +8,6 @@ import javax.sql.rowset.serial.SerialBlob;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.crm.utility.NVL;
-import com.crm.utility.Utility;
-import com.crm.utility.getMenu;
-import com.crm.utility.getParaValue;
 
 public class loginService {
   public static String login(Connection con, String input) throws JSONException,

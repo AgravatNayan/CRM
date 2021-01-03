@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.dropdown;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class gredeService {
+public class leavelService {
 	public static JSONObject getdropDwon(Connection con, String requestData) throws JSONException,
 	  ClassNotFoundException,
 	  SQLException {
@@ -24,12 +24,12 @@ public class gredeService {
 	    ResultSet rs = null;
 	    JSONObject request = new JSONObject(requestData);
 	    JSONObject jError = new JSONObject();
-	   
+	    
 	    String ls_username = request.getString("USERNAME");
 	    String ls_req_ip = request.getString("REQUEST_IP");
 	    
-	   try {
-	            String ls_query = "SELECT ID,NAME FROM GRADE_MST";
+	 	try {
+	            String ls_query = "SELECT ID,NAME FROM USER_LEVEL_MST";
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);
@@ -50,9 +50,9 @@ public class gredeService {
 	            mainObject.put("RESPONSE", jArray);
 	          } catch(Exception e) {
 	            ll_id = 0;
-	            System.out.println("Get Grade Error : " + e);
+	            System.out.println("Get User Level Error : " + e);
 	            e.printStackTrace();
-	          }	       
+	    }	       
 	    return mainObject;
 	  }
 }

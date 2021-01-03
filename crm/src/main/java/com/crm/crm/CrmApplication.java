@@ -10,27 +10,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.service.branchService;
-import com.crm.service.cityService;
-import com.crm.service.contractService;
-import com.crm.service.contractTypeService;
-import com.crm.service.countryService;
-import com.crm.service.departService;
-import com.crm.service.departmentService;
-import com.crm.service.designService;
-import com.crm.service.designationService;
-import com.crm.service.getEmpList;
-import com.crm.service.gredeService;
-import com.crm.service.insuranceService;
-import com.crm.service.leavelService;
-import com.crm.service.loginService;
-import com.crm.service.pMiscMstService;
-import com.crm.service.religionService;
-import com.crm.service.shiftConfigService;
-import com.crm.service.shiftService;
-import com.crm.service.stateService;
-import com.crm.service.userService;
+import com.crm.hrms.branch.branchService;
+import com.crm.hrms.company.companyService;
+import com.crm.hrms.contract.contractTypeService;
+import com.crm.hrms.department.departService;
+import com.crm.hrms.designation.designService;
+import com.crm.hrms.dropdown.cityService;
+import com.crm.hrms.dropdown.contractService;
+import com.crm.hrms.dropdown.countryService;
+import com.crm.hrms.dropdown.departmentService;
+import com.crm.hrms.dropdown.designationService;
+import com.crm.hrms.dropdown.gredeService;
+import com.crm.hrms.dropdown.leavelService;
+import com.crm.hrms.dropdown.pMiscMstService;
+import com.crm.hrms.dropdown.religionService;
+import com.crm.hrms.dropdown.shiftConfigService;
+import com.crm.hrms.dropdown.stateService;
+import com.crm.hrms.employee.getEmpList;
+import com.crm.hrms.insurance.insuranceService;
+import com.crm.hrms.shift.shiftService;
+import com.crm.hrms.user.userService;
 import com.crm.utility.ConnectionDbB;
+import com.crm.utility.loginService;
 
 @RestController @SpringBootApplication
 public class CrmApplication {
@@ -394,15 +395,98 @@ public class CrmApplication {
                     ls_output = departService.updateDepartment(con, input).toString();
                 } catch (Exception e) {
                     System.out.println("Logout User Error :" + e);
-                }                                         
-            }  
-            
-            
-            
-            
-            
-            
-            else {
+                }                                                     
+            } else if (ls_action.equals("UPDATEGRADE")) { // Update Grade
+                try {
+                    ls_output = gredeService.updateGrade(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            } else if (ls_action.equals("CREATEGRADE")) { // Create Grade
+                try {
+                    ls_output = gredeService.CreateGrade(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            } else if (ls_action.equals("DELETEGRADE")) { // Delete Grade
+                try {
+                    ls_output = gredeService.deleteGradeID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("GETGRADELIST")) { // Get Grade List
+                try {
+                    ls_output = gredeService.getGradeList(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }   else if (ls_action.equals("GETGRADEID")) { // Get Grade Id
+                try {
+                    ls_output = gredeService.getGradeId(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("GETMAXGRADE")) { // Get Max Grade Id
+                try {
+                    ls_output = gredeService.GetMaxGradeID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            } else if (ls_action.equals("GETBRANCHDTLIST")) { // Get Branch List
+                try {
+                    ls_output = branchService.getMaxBranchList(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("GETBRANCHID")) { // Get Branch Id
+                try {
+                    ls_output = branchService.getMBranchId(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("DELETEBRANCH")) { //  Delete Branch
+                try {
+                    ls_output = branchService.deleteBranchID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("GETMAXBRANCHID")) { // Get Max Branch Id
+                try {
+                    ls_output = branchService.GetMaxBranchtID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("CREATEBRANCH")) { // Create Branch
+                try {
+                    ls_output = branchService.CreateBranch(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            }  else if (ls_action.equals("UPDATEBRANCH")) { // Update Branch
+                try {
+                    ls_output = branchService.updateBranchID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update in grade:" + e);
+                }                                                     
+            } else if (ls_action.equals("GETCOMPANYDTL")) { // Get Company Details
+                try {
+                    ls_output = companyService.getCompanyDetails(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Company Detail :" + e);
+                }                                                     
+            } else if (ls_action.equals("UPDATECOMPANYDETAIL")) { // Update Company Details
+                try {
+                    ls_output = companyService.updateCompayDetail(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update Comapany Error :" + e);
+                }                                                     
+            } else if (ls_action.equals("GETMAXBOARDMEM")) { // Get Max Board Member Id
+                try {
+                    ls_output = companyService.GetMaxBoradMemtID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Max Board Error :" + e);
+                }                                                     
+            } else {
                 ls_output = "Kindly check your header action";
             }                                                                                                
             return ls_output;

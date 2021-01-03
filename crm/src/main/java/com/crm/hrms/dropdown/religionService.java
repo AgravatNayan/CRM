@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.dropdown;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class departmentService {
+import com.crm.utility.Utility;
+
+public class religionService {
 	public static JSONObject getdropDwon(Connection con, String requestData) throws JSONException,
 	  ClassNotFoundException,
 	  SQLException {
@@ -24,18 +26,18 @@ public class departmentService {
 	    ResultSet rs = null;
 	    JSONObject request = new JSONObject(requestData);
 	    JSONObject jError = new JSONObject();
-
+	   
 	    String ls_username = request.getString("USERNAME");
 	    String ls_req_ip = request.getString("REQUEST_IP");
 	    
-	          try {
-	            String ls_query = "SELECT DEPART_ID,NAME FROM DEPRTMENT_MST";
+	   try {
+	            String ls_query = "SELECT ID,NAME FROM RELIGION_MST";
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);
 
 	            while (rs.next()) {
-	              ll_id = rs.getInt("DEPART_ID");
+	              ll_id = rs.getInt("ID");
 	              name = rs.getString("NAME");
 
 	              jObject = new JSONObject();
@@ -50,9 +52,13 @@ public class departmentService {
 	            mainObject.put("RESPONSE", jArray);
 	          } catch(Exception e) {
 	            ll_id = 0;
-	            System.out.println("Get Department Error : " + e);
-	            e.printStackTrace();
-	          }	        	   
+	            
+	            System.out.println("Get Branch Error : " + e);
+	            Utility.PrintMessage("Error in GetMax Employee : " + e);
+	            
+	            mainObject.put("STATUS_CD", "99");
+	            mainObject.put("MESSAGE", "Something went to wrong,Please try after some time.");	            
+	          }	       
 	    return mainObject;
 	  }
 }

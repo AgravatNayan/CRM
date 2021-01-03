@@ -1,4 +1,4 @@
-package com.crm.service;
+package com.crm.hrms.user;
 
 import java.sql.Blob;
 import java.sql.Connection;

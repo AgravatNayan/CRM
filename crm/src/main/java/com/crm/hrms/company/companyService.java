@@ -398,59 +398,58 @@ public class companyService {
                     } else {
                         con.commit();
                         jOutPut.put("STATUS_CD", "0");
-                        jOutPut.put("MESSAGE", "Company Detail " + COMP_CD + " Sucessfully Updated.");                        
-                        jOutPut.put("BOARD_MEM_INSERT_MESSAGE", insertMeg);
-                        jOutPut.put("BOARD_MEM_UPDATE_MESSAGE", updateMsg);
-                        jOutPut.put("BOARD_MEM_DELETE_MESSAGE", deleteMsg);
+                        jOutPut.put("MESSAGE", "Company Detail " + COMP_CD + " Sucessfully Updated.");                                                
                     }                   
                     
                     response = jOutPut.toString();
                 } else {
-                    String updateEmployee = "UPDATE comp_mst SET COMP_NM = ?, TRADING_NM = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, GSTIN = ?, PAN_NO = ?, TYPE_OF_BUSINESS = ?, COMP_LOGO = ?, INCEPTION_DT = ?, EMAIL_ID = ?, CONTACT_NO = ?, LANDLINE_NO = ?, PERMANENT_ADD = ?, TAX_DEDUC_AC_MO = ?, WEBSITE = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, START_DT = ? WHERE COMP_CD = ?";
-
-                    PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);
-                    preparedStatement.setString(1, COMP_NM);
-                    preparedStatement.setString(2, TRADING_NM);
-                    preparedStatement.setString(3, ADDRESS_1);
-                    preparedStatement.setString(4, ADDRESS_2);
-                    preparedStatement.setString(5, ADDRESS_3);
-                    preparedStatement.setInt(6, CONTRAY_CD);
-                    preparedStatement.setInt(7, STATE_CD);
-                    preparedStatement.setInt(8, CITY_CD);
-                    preparedStatement.setString(9, PIN_CODE);
-                    preparedStatement.setString(10, GSTIN);
-                    preparedStatement.setString(11, PAN_NO);
-                    preparedStatement.setString(12, TYPE_OF_BUSINESS);
-                    preparedStatement.setBlob(13, COMP_LOGO);
-                    preparedStatement.setDate(14, INCEPTION_DT);
-                    preparedStatement.setString(15, EMAIL_ID);
-                    preparedStatement.setInt(16, CONTACT_NO);
-                    preparedStatement.setInt(17, LANDLINE_NO);
-                    preparedStatement.setString(18, PERMANENT_ADD);
-                    preparedStatement.setString(19, TAX_DEDUC_AC_MO);
-                    preparedStatement.setString(20, WEBSITE);
-                    preparedStatement.setString(21, LAST_ENTERED_BY);
-                    preparedStatement.setString(22, LAST_ENTERED_IP);
-                    preparedStatement.setDate(23, LAST_ENTERED_DATE);
-                    preparedStatement.setDate(24, START_DT);
-
-                    preparedStatement.setString(25, COMP_CD);
-
-                    int row = preparedStatement.executeUpdate();
-
-                    if (row == 0) {
-                        con.rollback();
-                        jOutPut.put("STATUS_CD", "99");
-                        jOutPut.put("MESSAGE", "You have not rights for update");
-                    } else {
-                        con.commit();
-                        jOutPut.put("STATUS_CD", "0");
-                        jOutPut.put("MESSAGE", "Company Details " + COMP_CD + " Sucessfully Updated.");
-                        jOutPut.put("BOARD_MEM_INSERT_MESSAGE", insertMeg);
-                        jOutPut.put("BOARD_MEM_UPDATE_MESSAGE", updateMsg);
-                        jOutPut.put("BOARD_MEM_DELETE_MESSAGE", deleteMsg);
-                    }
-
+//                    String updateEmployee = "UPDATE comp_mst SET COMP_NM = ?, TRADING_NM = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, GSTIN = ?, PAN_NO = ?, TYPE_OF_BUSINESS = ?, COMP_LOGO = ?, INCEPTION_DT = ?, EMAIL_ID = ?, CONTACT_NO = ?, LANDLINE_NO = ?, PERMANENT_ADD = ?, TAX_DEDUC_AC_MO = ?, WEBSITE = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, START_DT = ? WHERE COMP_CD = ?";
+//
+//                    PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);
+//                    preparedStatement.setString(1, COMP_NM);
+//                    preparedStatement.setString(2, TRADING_NM);
+//                    preparedStatement.setString(3, ADDRESS_1);
+//                    preparedStatement.setString(4, ADDRESS_2);
+//                    preparedStatement.setString(5, ADDRESS_3);
+//                    preparedStatement.setInt(6, CONTRAY_CD);
+//                    preparedStatement.setInt(7, STATE_CD);
+//                    preparedStatement.setInt(8, CITY_CD);
+//                    preparedStatement.setString(9, PIN_CODE);
+//                    preparedStatement.setString(10, GSTIN);
+//                    preparedStatement.setString(11, PAN_NO);
+//                    preparedStatement.setString(12, TYPE_OF_BUSINESS);
+//                    preparedStatement.setBlob(13, COMP_LOGO);
+//                    preparedStatement.setDate(14, INCEPTION_DT);
+//                    preparedStatement.setString(15, EMAIL_ID);
+//                    preparedStatement.setInt(16, CONTACT_NO);
+//                    preparedStatement.setInt(17, LANDLINE_NO);
+//                    preparedStatement.setString(18, PERMANENT_ADD);
+//                    preparedStatement.setString(19, TAX_DEDUC_AC_MO);
+//                    preparedStatement.setString(20, WEBSITE);
+//                    preparedStatement.setString(21, LAST_ENTERED_BY);
+//                    preparedStatement.setString(22, LAST_ENTERED_IP);
+//                    preparedStatement.setDate(23, LAST_ENTERED_DATE);
+//                    preparedStatement.setDate(24, START_DT);
+//
+//                    preparedStatement.setString(25, COMP_CD);
+//
+//                    int row = preparedStatement.executeUpdate();
+//
+//                    if (row == 0) {
+//                        con.rollback();
+//                        jOutPut.put("STATUS_CD", "99");
+//                        jOutPut.put("MESSAGE", "You have not rights for update");
+//                    } else {
+//                        con.commit();
+//                        jOutPut.put("STATUS_CD", "0");
+//                        jOutPut.put("MESSAGE", "Company Details " + COMP_CD + " Sucessfully Updated.");
+//                        jOutPut.put("BOARD_MEM_INSERT_MESSAGE", insertMeg);
+//                        jOutPut.put("BOARD_MEM_UPDATE_MESSAGE", updateMsg);
+//                        jOutPut.put("BOARD_MEM_DELETE_MESSAGE", deleteMsg);
+//                    }
+//                    
+                    jOutPut.put("STATUS_CD", "999");
+                    jOutPut.put("MESSAGE", "Update Not Allow.");  
 
                     response = jOutPut.toString();
                 }
@@ -592,24 +591,24 @@ public class companyService {
             String updateFlag = updateMem.getString("UPDATE_FLAG");
             JSONObject updateData = new JSONObject(updateMem.getString("DATA"));
 
-            String UPDATE_FLAG = NVL.StringNvl(updateMem.getString("UPDATE_FLAG"));
-            String PARTNE_NM = NVL.StringNvl(updateMem.getString("PARTNE_NM"));
-            String ROLE = NVL.StringNvl(updateMem.getString("ROLE"));
-            String NATURE_OF_ROLE = NVL.StringNvl(updateMem.getString("NATURE_OF_ROLE"));
+            String UPDATE_FLAG = NVL.StringNvl(updateData.getString("UPDATE_FLAG"));
+            String PARTNE_NM = NVL.StringNvl(updateData.getString("PARTNE_NM"));
+            String ROLE = NVL.StringNvl(updateData.getString("ROLE"));
+            String NATURE_OF_ROLE = NVL.StringNvl(updateData.getString("NATURE_OF_ROLE"));
             Date JOINING_DT = null;
-            if (updateMem.getString("JOINING_DT") == null || updateMem.getString("JOINING_DT").equals("")) {
+            if (updateData.getString("JOINING_DT") == null || updateData.getString("JOINING_DT").equals("")) {
                 JOINING_DT = null;
             } else {
-                JOINING_DT = Date.valueOf(updateMem.getString("JOINING_DT"));
+                JOINING_DT = Date.valueOf(updateData.getString("JOINING_DT"));
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
             int CONTACT = 0;
-            if (updateMem.getString("CONTACT") == null || updateMem.getString("CONTACT").equals("")) {
+            if (updateData.getString("CONTACT") == null || updateData.getString("CONTACT").equals("")) {
                 CONTACT = 0;
             } else {
-                CONTACT = updateMem.getInt("CONTACT");
+                CONTACT = updateData.getInt("CONTACT");
             }
-            String REMARKS = NVL.StringNvl(updateMem.getString("REMARKS"));
+            String REMARKS = NVL.StringNvl(updateData.getString("REMARKS"));
 
 
             if (UPDATE_FLAG.equals("Y")) {

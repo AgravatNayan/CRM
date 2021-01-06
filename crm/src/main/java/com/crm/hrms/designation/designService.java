@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import com.crm.utility.NVL;
 import com.crm.utility.Utility;
+import com.crm.utility.getDepartment;
 
 public class designService {
     public static String GetMaxShiftID(Connection con, String ls_request) {
@@ -105,8 +106,9 @@ public class designService {
                     name = rs.getString("NAME");
 
                     jObject = new JSONObject();
-                    jObject.put("DEPART_ID", NVL.StringNvl(rs.getString("DEPART_ID")));
-                    jObject.put("DESIG_ID", NVL.StringNvl(rs.getString("DESIG_ID")));
+                    String ls_depart = getDepartment.getDepartment(con, Integer.parseInt(NVL.StringNvl(rs.getString("DEPART_ID"))));
+                    jObject.put("DEPART_ID",ls_depart);                                                            		                   
+                    jObject.put("DESIG_ID", NVL.StringNvl(rs.getString("DESIG_ID")));                                                          
                     jObject.put("NAME", NVL.StringNvl(rs.getString("NAME")));
                     jObject.put("COMP_CD", NVL.StringNvl(rs.getString("COMP_CD")));
                     jObject.put("DESIG_INACTIVE_DT", NVL.StringNvl(rs.getString("DESIG_INACTIVE_DT")));
@@ -125,7 +127,9 @@ public class designService {
             return mainObject.toString();
         }
 
-    public static String getDesigId(Connection con, String requestData) throws JSONException,
+    
+
+	public static String getDesigId(Connection con, String requestData) throws JSONException,
         ClassNotFoundException,
         SQLException {
 
@@ -429,9 +433,9 @@ public class designService {
                 	 LAST_MODIFIED_DT = Date.valueOf(jReuqest.getString("LAST_MODIFIED_DT"));
                      //	(Date) new SimpleDateFormat("DD-MM-YYYY").parse(jReuqest.getString("ENTRY_DT"));
                  }
-                 
+                 System.out.println(NAME);
   	            if (UPDATE_FLAG.equals("Y")) {
-  	            	String updateEmployee = "UPDATE designation_mst SET DEPART_ID = ?, NAME = ?, COMP_CD = ?, DESIG_INACTIVE_DT = ?, ACTIVE_STATUS = ?, LAST_MODIFIED_BY = ?, LAST_MODOFIED_IP = ?, LAST_MODIFIED_DT = ? WHERE DEPART_ID = ? AND COMP_CD = ? AND IS_DELETE = ?";	
+  	            	String updateEmployee = "UPDATE designation_mst SET DEPART_ID = ?, NAME = ?, COMP_CD = ?, DESIG_INACTIVE_DT = ?, ACTIVE_STATUS = ?, LAST_MODIFIED_BY = ?, LAST_MODOFIED_IP = ?, LAST_MODIFIED_DT = ? WHERE DESIG_ID = ? AND COMP_CD = ? AND IS_DELETE = ?";	
   	            	PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);	               
 
   	            	preparedStatement.setInt(1,DEPART_ID);

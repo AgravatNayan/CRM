@@ -33,24 +33,31 @@ public class branchService {
 	    JSONObject request = new JSONObject(requestData);
 	    JSONObject jError = new JSONObject();
 
-	    String ls_req_comp_cd = "132";
-	    String ls_username = request.getString("USERNAME");
-	    String ls_req_ip = request.getString("REQUEST_IP");
+	    String ls_req_comp_cd = NVL.StringNvl(request.getString("COMP_CD"));
+	    String ls_view_flag = "G";//NVL.StringNvl(request.getString("VIEW_FLAG")); 
+	    String ls_username = NVL.StringNvl(request.getString("USERNAME"));
+	    String ls_req_ip = NVL.StringNvl(request.getString("REQUEST_IP"));
 	    
 	          try {
-	            String ls_query = "SELECT COMP_CD,BRANCH_CD,BRANCH_NM,BRANCH_OPENING_DT,BRANCH_MANAGER,BRANCH_CONTACT,BRANCH_EMAIL FROM BRANCH_MST WHERE COMP_CD='"+ls_req_comp_cd+"'";
+	            String ls_query = null;
+	            if (ls_view_flag.equals("G")) {
+	            	ls_query = "SELECT COMP_CD,BRANCH_CD,BRANCH_NM,BRANCH_OPENING_DT,BRANCH_MANAGER,BRANCH_CONTACT,BRANCH_EMAIL FROM BRANCH_MST WHERE COMP_CD='"+ls_req_comp_cd+"'";
+	            } else {
+	            	ls_query = "SELECT COMP_CD,BRANCH_CD,BRANCH_NM,BRANCH_OPENING_DT,BRANCH_MANAGER,BRANCH_CONTACT,BRANCH_EMAIL FROM BRANCH_MST WHERE COMP_CD='"+ls_req_comp_cd+"' AND ENTERED_BY = '"+ls_username+"'";
+	            }
+	            System.out.println("Branch Data :"+ls_query);        
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);
 
 	            while (rs.next()) {
-	            	ls_comp_cd = rs.getString("COMP_CD");
-	         	    ls_branch_cd =  rs.getString("BRANCH_CD");;
-	         	    ls_branch_nm =  rs.getString("BRANCH_NM");;
-	         	    ls_branch_opening_dt =  rs.getString("BRANCH_OPENING_DT");;
-	         	    ls_maneger =  rs.getString("BRANCH_MANAGER");;
-	         	    ls_branch_contact =  rs.getString("BRANCH_CONTACT");;
-	         	    ls_branch_email =  rs.getString("BRANCH_EMAIL");;
+	            	ls_comp_cd = NVL.StringNvl(rs.getString("COMP_CD"));
+	         	    ls_branch_cd =  NVL.StringNvl(rs.getString("BRANCH_CD"));
+	         	    ls_branch_nm =  NVL.StringNvl(rs.getString("BRANCH_NM"));
+	         	    ls_branch_opening_dt =  NVL.StringNvl(rs.getString("BRANCH_OPENING_DT"));
+	         	    ls_maneger = NVL.StringNvl(rs.getString("BRANCH_MANAGER"));
+	         	    ls_branch_contact =  NVL.StringNvl(rs.getString("BRANCH_CONTACT"));
+	         	    ls_branch_email = NVL.StringNvl(rs.getString("BRANCH_EMAIL"));
 
 	              jObject = new JSONObject();	              
 	              jObject.put("BRANCH_CD",ls_branch_cd);
@@ -65,12 +72,18 @@ public class branchService {
 	              jArray.put(jObject);
 
 	            }
-
-	            mainObject.put("STATUS_CD", "0");
-	            mainObject.put("RESPONSE", jArray);
+	            System.out.println("Branch Array Length :"+jArray.length()); 
+	            if (jArray.length() > 0 ) {
+	            	mainObject.put("STATUS_CD", "0");
+		            mainObject.put("RESPONSE", jArray);
+	            } else {
+	            	mainObject.put("STATUS_CD", "99");
+		            mainObject.put("RESPONSE", "Data Not Found");
+	            }
+	            
 	          } catch(Exception e) {	            
 	            System.out.println("Get Branch Error : " + e);
-	            Utility.PrintMessage("Error in GetMax Employee : " + e);
+	            Utility.PrintMessage("Error in Get Branch Data : " + e);
 	            
 	            mainObject.put("STATUS_CD", "99");
 	            mainObject.put("MESSAGE", "Something went to wrong,Please try after some time.");	            	            	           
@@ -97,11 +110,11 @@ public class branchService {
 	    String ls_query = null;
 	          try {
 	        	if (viewType.equals("G")) {
-	        		ls_query = "SELECT COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT FROM branch_mst WHERE COMP_CD = '"+ls_req_comp_cd+"' AND IS_DELETE = 'N'";
+	        		ls_query = "SELECT COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT FROM branch_mst WHERE COMP_CD = '"+ls_req_comp_cd+"'";
 	        	} else {
-	        		ls_query = "SELECT COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT FROM branch_mst WHERE COMP_CD = '"+ls_req_comp_cd+"' AND IS_DELETE = 'N' AND ENTERED_BY = '"+ls_username+"'";
+	        		ls_query = "SELECT COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT FROM branch_mst WHERE COMP_CD = '"+ls_req_comp_cd+"' AND ENTERED_BY = '"+ls_username+"'";
 	        	}
-	            System.out.println(ls_query);
+	        	System.out.println("Branch List Query :"+ls_query);
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);
@@ -138,20 +151,17 @@ public class branchService {
 	              jArray.put(jObject);
 
 	            }
-	            
-	            
+	            System.out.println("Branch List Array  :"+jArray.length());	            
 	            if (jArray.length() <= 0) {
 	            	mainObject.put("STATUS_CD", "99");
 	 	            mainObject.put("MessageBox", "not rights");
 	            } else {
 	            	mainObject.put("STATUS_CD", "0");
 	 	            mainObject.put("RESPONSE", jArray);
-	            }
-	            
-	           
+	            }	            	           
 	          } catch(Exception e) {	            
-	            System.out.println("Get Branch Error : " + e);
-	            Utility.PrintMessage("Error in Branch Id : " + e);
+	            System.out.println("Get Branch List Error : " + e);
+	            Utility.PrintMessage("Error in Branch List : " + e);
 	            
 	            mainObject.put("STATUS_CD", "99");
 	            mainObject.put("MESSAGE", "Something went to wrong,Please try after some time.");	            	            	           
@@ -183,6 +193,7 @@ public class branchService {
 	        	} else {
 	        		ls_query = "SELECT COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT FROM branch_mst WHERE COMP_CD = '"+ls_req_comp_cd+"' AND BRANCH_CD = '"+ls_branch+"' AND IS_DELETE = 'N' AND  ENTERED_BY = '"+ls_username+"'";
 	        	}
+	        	System.out.println("Branch Max Id Query:"+ls_query);
 	            System.out.println(ls_query);
 	            Statement stmt = null;
 	            stmt = con.createStatement();
@@ -220,7 +231,7 @@ public class branchService {
 	              jArray.put(jObject);
 
 	            }
-
+	            System.out.println("Branch Max Id Array Size:"+jArray.length());
 	            if (jArray.length() <= 0) {
 	            	mainObject.put("STATUS_CD", "99");
 	 	            mainObject.put("MessageBox", "not rights");
@@ -249,15 +260,16 @@ public class branchService {
 	            JSONObject jOutPut = new JSONObject();
 	            
 	            String BRANCH_CD = jin.getString("BRANCH_CD");  
-	            String comp_cd= jin.getString("COMP_CD");	           	           
+	            String comp_cd= jin.getString("COMP_CD");
+	            String ls_username= jin.getString("USERNAME");
 	            String ls_del_flag = jin.getString("DELETE_FLAG");
-	            
+	            System.out.println("Branch Delete User Rights:"+ls_del_flag+" For User :"+ls_username);
 	            if(ls_del_flag.equals("Y")) {
 	            	 String extingEmp = "UPDATE BRANCH_MST SET IS_DELETE = 'Y' WHERE BRANCH_CD  = " +BRANCH_CD+" AND IS_DELETE = 'N' AND COMP_CD = '"+comp_cd+"'";	            	
 	                 stmt = con.createStatement();
-	                 
+	                 System.out.println("Branch Delete Query :"+extingEmp);
 	                 int row = stmt.executeUpdate(extingEmp);
-	                 
+	                 System.out.println("Branch Delete Row Count :"+row);
 	                 if (row > 0) {
 	                 	con.commit();
 	                 	 jOutPut.put("STATUS_CD", "0");	
@@ -414,7 +426,7 @@ public class branchService {
 	            }
 	            		
 	            String PIN_CODE =NVL.StringNvl(jReuqest.getString("PIN_CODE"));
-	            String ACTIVE_STATUE =NVL.StringNvl(jReuqest.getString("ACTIVE_STATUE"));
+	            String ACTIVE_STATUE =NVL.StringNvl(jReuqest.getString("ACTIVE_STATUS"));
 	            Date INACTIVE_DATE = null;
 	            if (jReuqest.getString("INACTIVE_DATE") == null || jReuqest.getString("INACTIVE_DATE").equals("")) {
 	            	INACTIVE_DATE = null;
@@ -465,7 +477,7 @@ public class branchService {
 	            
 	            JSONObject jOut = new JSONObject();
 	            String sql = "INSERT INTO branch_mst (COMP_CD, BRANCH_CD, BRANCH_NM, BRANCH_OPENING_DT, BRANCH_MANAGER, ADDRESS_1, ADDRESS_2, ADDRESS_3, CONTRAY_CD, STATE_CD, CITY_CD, PIN_CODE, ACTIVE_STATUE, INACTIVE_DATE, LANDLINE_NO, CONTACT_PERSON, BRANCH_CONTACT, BRANCH_EMAIL, ENTERED_BY, ENTERED_IP, ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP, LAST_ENTERED_DATE, ACTIVE_STATUS, INACTIVE_DT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+	            System.out.println("Create Branch Query :"+sql);
 	            if (CREATE_FLAG.equals("Y")) {
 	                PreparedStatement preparedStatement = con.prepareStatement(sql);
 	                		preparedStatement.setString(1,COMP_CD);
@@ -687,46 +699,46 @@ public class branchService {
 		                jOutPut.put("MESSAGE", "BRANCH " + BRANCH_CD + " Sucessfully Updated.");
 		                response = jOutPut.toString();
 	  	            } else {
-	  	            	String updateEmployee = "UPDATE branch_mst SET COMP_CD = ?, BRANCH_NM = ?, BRANCH_OPENING_DT = ?, BRANCH_MANAGER = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, ACTIVE_STATUE = ?, INACTIVE_DATE = ?, LANDLINE_NO = ?, CONTACT_PERSON = ?, BRANCH_CONTACT = ?, BRANCH_EMAIL = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, ACTIVE_STATUS = ?, INACTIVE_DT = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND IS_DELETE = ? AND ENTERED_BY = ?";	
-	  	            	PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);	               
-	  	            	preparedStatement.setString(1,COMP_CD);
-	  	                preparedStatement.setString(2,BRANCH_NM);
-	  	                preparedStatement.setDate(3,BRANCH_OPENING_DT);
-	  	                preparedStatement.setDate(4,BRANCH_OPENING_DT);
-	  	                preparedStatement.setString(5,ADDRESS_1);
-	  	                preparedStatement.setString(6,ADDRESS_2);
-	  	                preparedStatement.setString(7,ADDRESS_3);
-	  		            preparedStatement.setInt(8,CONTRAY_CD);
-	  		            preparedStatement.setInt(9,STATE_CD);
-	  		            preparedStatement.setInt(10,CITY_CD);
-	  		            preparedStatement.setString(11,PIN_CODE);
-	  	                preparedStatement.setString(12,ACTIVE_STATUE);
-	  	                preparedStatement.setDate(13,INACTIVE_DATE);
-	  	                preparedStatement.setInt(14,LANDLINE_NO);
-	  	                preparedStatement.setString(15,CONTACT_PERSON);
-	  	                preparedStatement.setInt(16,BRANCH_CONTACT);
-	  	                preparedStatement.setString(17,BRANCH_EMAIL);
-	  		            preparedStatement.setString(18,LAST_ENTERED_BY);
-	  		            preparedStatement.setString(19,LAST_ENTERED_IP);
-	  		            preparedStatement.setDate(20,LAST_ENTERED_DATE);
-	  		            preparedStatement.setString(21,ACTIVE_STATUS);
-	  		            preparedStatement.setDate(22,INACTIVE_DT);
-	  		            
-	  		            preparedStatement.setString(21,COMP_CD);
-	  		            preparedStatement.setString(22,BRANCH_CD);
-	  		            preparedStatement.setString(23,"N");
-	  		            preparedStatement.setString(24,USERNAME);
-	  		          	  		        
-		                int row = preparedStatement.executeUpdate();
-                      
-		                if (row == 0) {
-		                	con.rollback();
-		                } else {
-		                	con.commit();	                	                	                
-		                }            
-		                
-		                jOutPut.put("STATUS_CD", "0");
-		                jOutPut.put("MESSAGE", "BRANCH " + BRANCH_CD + " Sucessfully Updated.");
+//	  	            	String updateEmployee = "UPDATE branch_mst SET COMP_CD = ?, BRANCH_NM = ?, BRANCH_OPENING_DT = ?, BRANCH_MANAGER = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, ACTIVE_STATUE = ?, INACTIVE_DATE = ?, LANDLINE_NO = ?, CONTACT_PERSON = ?, BRANCH_CONTACT = ?, BRANCH_EMAIL = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, ACTIVE_STATUS = ?, INACTIVE_DT = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND IS_DELETE = ? AND ENTERED_BY = ?";	
+//	  	            	PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);	               
+//	  	            	preparedStatement.setString(1,COMP_CD);
+//	  	                preparedStatement.setString(2,BRANCH_NM);
+//	  	                preparedStatement.setDate(3,BRANCH_OPENING_DT);
+//	  	                preparedStatement.setDate(4,BRANCH_OPENING_DT);
+//	  	                preparedStatement.setString(5,ADDRESS_1);
+//	  	                preparedStatement.setString(6,ADDRESS_2);
+//	  	                preparedStatement.setString(7,ADDRESS_3);
+//	  		            preparedStatement.setInt(8,CONTRAY_CD);
+//	  		            preparedStatement.setInt(9,STATE_CD);
+//	  		            preparedStatement.setInt(10,CITY_CD);
+//	  		            preparedStatement.setString(11,PIN_CODE);
+//	  	                preparedStatement.setString(12,ACTIVE_STATUE);
+//	  	                preparedStatement.setDate(13,INACTIVE_DATE);
+//	  	                preparedStatement.setInt(14,LANDLINE_NO);
+//	  	                preparedStatement.setString(15,CONTACT_PERSON);
+//	  	                preparedStatement.setInt(16,BRANCH_CONTACT);
+//	  	                preparedStatement.setString(17,BRANCH_EMAIL);
+//	  		            preparedStatement.setString(18,LAST_ENTERED_BY);
+//	  		            preparedStatement.setString(19,LAST_ENTERED_IP);
+//	  		            preparedStatement.setDate(20,LAST_ENTERED_DATE);
+//	  		            preparedStatement.setString(21,ACTIVE_STATUS);
+//	  		            preparedStatement.setDate(22,INACTIVE_DT);
+//	  		            
+//	  		            preparedStatement.setString(21,COMP_CD);
+//	  		            preparedStatement.setString(22,BRANCH_CD);
+//	  		            preparedStatement.setString(23,"N");
+//	  		            preparedStatement.setString(24,USERNAME);
+//	  		          	  		        
+//		                int row = preparedStatement.executeUpdate();
+//                      
+//		                if (row == 0) {
+//		                	con.rollback();
+//		                } else {
+//		                	con.commit();	                	                	                
+//		                }   
+	  	            	
+		                jOutPut.put("STATUS_CD", "99");
+		                jOutPut.put("MESSAGE", "Update not allow.");		                
 		                response = jOutPut.toString();
 	  	            }	  	            	                        	               	               
 	            }                                                                                              

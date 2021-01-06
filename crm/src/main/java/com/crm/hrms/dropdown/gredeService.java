@@ -79,7 +79,7 @@ public class gredeService {
             JSONArray jresponse = new JSONArray();
             JSONObject jobj = new JSONObject();
             jobj.put("USERNAME", jin.getString("USERNAME"));
-            jobj.put("CONTRACT_ID", maxID);
+            jobj.put("GRADE_ID", maxID);
             jresponse.put(jobj);
             jOut.put("STATUS_CD", "0");
             jOut.put("RESPONSE", jresponse);

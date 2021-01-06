@@ -1,22 +1,16 @@
 package com.crm.hrms.contract;
 
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.sql.rowset.serial.SerialBlob;
-
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.crm.utility.NVL;
 import com.crm.utility.Utility;
-import com.crm.utility.getCategoryValue;
 
 public class contractTypeService {
 	
@@ -256,8 +250,10 @@ public class contractTypeService {
 	        try {
 
 	            JSONObject jin = new JSONObject(ls_request);
-	            System.out.println(jin.toString());
-
+	            System.out.println(jin.toString());	
+	            
+	            String ls_insert_flag = jin.getString("INSERT_FALG");
+	            
 	            JSONObject jReuqest = new JSONObject();
 	            jReuqest = jin.getJSONObject("REQUEST_DATA");
 

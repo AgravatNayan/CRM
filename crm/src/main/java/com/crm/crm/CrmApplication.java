@@ -414,7 +414,7 @@ public class CrmApplication {
                 } catch (Exception e) {
                     System.out.println("Update in grade:" + e);
                 }                                                     
-            }  else if (ls_action.equals("GETGRADELIST")) { // Get Grade List
+            }  else if (ls_action.equals("GETGRADELISTS")) { // Get Grade List
                 try {
                     ls_output = gredeService.getGradeList(con, input).toString();
                 } catch (Exception e) {

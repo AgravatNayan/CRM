@@ -1,13 +1,18 @@
 package com.crm.hrms.employee;
 
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.crm.utility.NVL;
@@ -256,7 +261,13 @@ public class getEmpList {
                 jOut.put("TEMP_PIN_CODE", NVL.StringNvl(rs.getString("TEMP_PIN_CODE")));
                 jOut.put("ACTIVE", NVL.StringNvl(rs.getString("ACTIVE")));
                 jOut.put("PER_CITY_CD", NVL.StringNvl(rs.getString("PER_CITY_CD")));
-                jOut.put("SHIFT_ID", NVL.StringNvl(rs.getString("SHIFT_ID")));                
+                jOut.put("SHIFT_ID", NVL.StringNvl(rs.getString("SHIFT_ID")));
+                
+                JSONArray insuDtl  = new JSONArray();
+                insuDtl = getInsurance(con,Integer.parseInt(ls_emp_id));
+                System.out.println(insuDtl);
+                jOut.put("INSU_DTL",insuDtl);
+                
             }
 
             JSONArray jresponse = new JSONArray();
@@ -300,6 +311,47 @@ public class getEmpList {
         return response;
 
     }
+    
+    public static JSONArray getInsurance(Connection con,int Emp_id) throws SQLException, JSONException {
+    	
+    	Statement stmt = null;
+    	ResultSet rs = null;
+    	JSONObject response = null;
+    	JSONArray jArray = new JSONArray();
+    	String sql = "SELECT COMP_CD, EMP_ID, INSU_THROUGH, INSU_ID, INSU_TYPE, INSU_REG_NO, INSU_BOOK_NO, INSU_START_DT, INSU_END_DT, INSU_STATUS, INSU_INACTIVE_DT, INSU_AGENCY, INSU_AGENCY_ID, INSU_CUST_NO, INSU_PREMIUM, INSU_DOC_POLICY, IS_DELETE FROM emp_insurance_mst WHERE EMP_ID = "+Emp_id;    	
+    	stmt = con.createStatement();
+    	rs = stmt.executeQuery(sql);
+    	
+    	while (rs.next()) {
+    		response = new JSONObject();
+    		
+    		response.put("COMP_CD",rs.getString("COMP_CD"));
+    		response.put("EMP_ID",rs.getString("EMP_ID"));
+    		response.put("INSU_THROUGH",rs.getString("INSU_THROUGH"));
+    		response.put("INSU_ID",rs.getString("INSU_ID"));
+    		response.put("INSU_TYPE",rs.getString("INSU_TYPE"));
+    		response.put("INSU_REG_NO",rs.getString("INSU_REG_NO"));
+    		response.put("INSU_BOOK_NO",rs.getString("INSU_BOOK_NO"));
+    		response.put("INSU_START_DT",rs.getString("INSU_START_DT"));
+    		response.put("INSU_END_DT",rs.getString("INSU_END_DT"));
+    		response.put("INSU_STATUS",rs.getString("INSU_STATUS"));
+    		response.put("INSU_INACTIVE_DT",rs.getString("INSU_INACTIVE_DT"));
+    		response.put("INSU_AGENCY",rs.getString("INSU_AGENCY"));
+    		response.put("INSU_AGENCY_ID",rs.getString("INSU_AGENCY_ID"));
+    		response.put("INSU_CUST_NO",rs.getString("INSU_CUST_NO"));
+    		response.put("INSU_PREMIUM",rs.getString("INSU_PREMIUM"));
+    		response.put("INSU_DOC_POLICY",rs.getString("INSU_DOC_POLICY"));
+    		response.put("IS_DELETE",rs.getString("IS_DELETE"));    		
+    		jArray.put(response);
+		}
+    	
+    	if(jArray.length() < 0 ) {
+    		return null;
+    	} else {
+    		return jArray;
+    	}    	
+    }
+    
 
     public static String CreateEmployee(Connection con, String ls_request) {
         String response = "";
@@ -519,7 +571,43 @@ public class getEmpList {
                 LAST_MODIFIED_DT = Date.valueOf(jReuqest.getString("LAST_MODIFIED_DT"));  
                 		//(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("LAST_MODIFIED_DT"));
             }
-
+                        
+            JSONArray insuranceDelete = new JSONArray(jReuqest.getString("INSURANCELISTDELETE"));
+            int i = 0;
+            try {
+                if (insuranceDelete.length() > 0) {
+                    i = deleteInsu(con, insuranceDelete, COMP_CD);
+                }
+            } catch (Exception e) {
+                Utility.PrintMessage("Error in Delete Insurance Details : " + e);
+                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+            }
+            
+            
+            JSONArray insuranceInsert = new JSONArray(jReuqest.getString("INSURANCELISTINSERT"));
+            int j = 0;
+            try {
+                if (insuranceInsert.length() > 0) {
+                    j = insertInsu(con, insuranceInsert, COMP_CD, EMP_ID);
+                }
+            } catch (Exception e) {
+                Utility.PrintMessage("Error in Insert Board Member Details : " + e);
+                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+            }
+              
+            JSONArray insuranceUpdate = new JSONArray(jReuqest.getString("INSURANCELISTUPDATE"));
+            int k = 0;
+            try {
+                if (insuranceUpdate.length() > 0) {
+                    k = updateInsu(con, insuranceUpdate, COMP_CD,EMP_ID);
+                }
+            } catch (Exception e) {
+                Utility.PrintMessage("Error in Update Board Member Details : " + e);
+                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+            }
+            
+            
+            
             String extingEmp = "SELECT COUNT(*) AS EMP_CNT FROM EMP_MST WHERE EMP_ID = " + EMP_ID+" AND IS_DELETE = 'N'";
 
             stmt = con.createStatement();
@@ -867,6 +955,41 @@ public class getEmpList {
                     		//(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("LAST_MODIFIED_DT"));
                 }            
                 
+                JSONArray insuranceDelete = new JSONArray(jReuqest.getString("INSURANCELISTDELETE"));
+                int i = 0;
+                try {
+                    if (insuranceDelete.length() > 0) {
+                        i = deleteInsu(con, insuranceDelete, COMP_CD);
+                    }
+                } catch (Exception e) {
+                    Utility.PrintMessage("Error in Delete Insurance Details : " + e);
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                }
+                
+                
+                JSONArray insuranceInsert = new JSONArray(jReuqest.getString("INSURANCELISTINSERT"));
+                int j = 0;
+                try {
+                    if (insuranceInsert.length() > 0) {
+                        j = insertInsu(con, insuranceInsert, COMP_CD, EMP_ID);
+                    }
+                } catch (Exception e) {
+                    Utility.PrintMessage("Error in Insert Board Member Details : " + e);
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                }
+                  
+                JSONArray insuranceUpdate = new JSONArray(jReuqest.getString("INSURANCELISTUPDATE"));
+                int k = 0;
+                try {
+                    if (insuranceUpdate.length() > 0) {
+                        k = updateInsu(con, insuranceUpdate, COMP_CD,EMP_ID);
+                    }
+                } catch (Exception e) {
+                    Utility.PrintMessage("Error in Update Board Member Details : " + e);
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                }
+                
+                
                 
                 String updateEmployee = "UPDATE crm.emp_mst\r\n" + 
                 		"SET\r\n" + 
@@ -1046,6 +1169,237 @@ public class getEmpList {
         }
         return response;
 
+    }
+    
+    public static int deleteInsu(Connection con, JSONArray insuData, String comp_cd) throws JSONException, SQLException {
+        Statement stmt = null;
+        int row = 0;
+
+        for (int i = 0; i < insuData.length(); i++) {
+            JSONObject deleteInsu = new JSONObject();
+            deleteInsu = (JSONObject) insuData.get(i);
+
+            int id = deleteInsu.getInt("INSU_ID");
+            String ls_flag = deleteInsu.getString("DELETE_FLAG");
+            String sql = null;
+            if (ls_flag.equals("Y")) {
+                sql = "UPDATE emp_insurance_mst SET IS_DELETE = 'Y' WHERE COMP_CD = '" + comp_cd + "' AND INSU_ID =" + id;
+                stmt = con.createStatement();
+                row = stmt.executeUpdate(sql);
+                row = row + 1;
+            }
+        }
+        return row;
+    }
+    
+    public static int insertInsu(Connection con, JSONArray insuData, String ls_comp_cd,int emp_id) throws SQLException, JSONException {
+        int row = 0;
+        for (int i = 0; i < insuData.length(); i++) {
+            JSONObject insertMem = new JSONObject();
+            insertMem = (JSONObject) insuData.get(i);
+
+
+            String INSERT_FLAG = NVL.StringNvl(insertMem.getString("INSERT_FLAG"));
+            
+            int ID = 0;
+            if (insertMem.getString("SRCD") == null || insertMem.getString("SRCD").equals("")) {
+                ID = 0;
+            } else {
+                ID = insertMem.getInt("SRCD");
+            }                       
+            String INSURANCEAGENCY = NVL.StringNvl(insertMem.getString("INSURANCEAGENCY"));
+            String INSURANCEREGNO = NVL.StringNvl(insertMem.getString("INSURANCEREGNO"));
+            Double INSURANCEAMOUNT = 0.00;
+            if (insertMem.getString("INSURANCEAMOUNT") == null || insertMem.getString("INSURANCEAMOUNT").equals("")) {
+            	INSURANCEAMOUNT = 0.00;
+            } else {
+            	INSURANCEAMOUNT = insertMem.getDouble("INSURANCEAMOUNT");            			
+            }
+            String INSURANCETYPE = NVL.StringNvl(insertMem.getString("INSURANCETYPE"));
+            Date INSURANCEINACTIVEDT = null;
+            if (insertMem.getString("INSURANCEINACTIVEDT") == null || insertMem.getString("INSURANCEINACTIVEDT").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(insertMem.getString("INSURANCEINACTIVEDT"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            Date INSURANCEENDDATE = null;
+            if (insertMem.getString("INSURANCEENDDATE") == null || insertMem.getString("INSURANCEENDDATE").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(insertMem.getString("INSURANCEENDDATE"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            String INSURANCETHROUGH = NVL.StringNvl(insertMem.getString("INSURANCETHROUGH"));
+            Date INSURANCESTARTDATE = null;
+            if (insertMem.getString("INSURANCESTARTDATE") == null || insertMem.getString("INSURANCESTARTDATE").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(insertMem.getString("INSURANCESTARTDATE"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            String INSURANESTATUS = NVL.StringNvl(insertMem.getString("INSURANESTATUS"));
+            int INSU_AGENCY = 0;
+            if (insertMem.getString("INSU_AGENCY") == null || insertMem.getString("INSU_AGENCY").equals("")) {
+            	INSU_AGENCY = 0;
+            } else {
+            	INSU_AGENCY = insertMem.getInt("INSU_AGENCY");
+            } 
+            int INSU_CUST_NO = 0;
+            if (insertMem.getString("INSU_CUST_NO") == null || insertMem.getString("INSU_CUST_NO").equals("")) {
+            	INSU_CUST_NO = 0;
+            } else {
+            	INSU_CUST_NO = insertMem.getInt("INSU_CUST_NO");
+            } 
+            
+            String POLICY = NVL.StringNvl(insertMem.getString("POLICY"));
+            byte[] POLICY_BUTE = POLICY.getBytes();
+        	
+        	
+        	Blob POLICY_BLOB = new SerialBlob(POLICY_BUTE);
+     	
+            
+            
+            Statement stmt = null;
+            ResultSet rs = null;
+
+            String ls_sql = "SELECT COUNT(*) AS CNT FROM emp_insurance_mst WHERE INSU_ID =" + ID + " AND IS_DELETE = 'N'";
+            System.out.println(ls_sql);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(ls_sql);
+
+            int cnt = 0;
+            while (rs.next()) {
+                cnt = rs.getInt("CNT");
+            }
+
+            if (cnt <= 0) {
+                if (INSERT_FLAG.equals("Y")) {
+                    JSONObject jOut = new JSONObject();
+                    String sql = "INSERT INTO emp_insurance_mst (COMP_CD, EMP_ID, INSU_THROUGH, INSU_ID, INSU_TYPE, INSU_REG_NO, INSU_START_DT, INSU_END_DT, INSU_STATUS, INSU_INACTIVE_DT, INSU_AGENCY, INSU_AGENCY_ID, INSU_CUST_NO, INSU_PREMIUM, INSU_DOC_POLICY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement preparedStatement = null;
+
+                    try {
+                        preparedStatement = con.prepareStatement(sql);                                              
+                        preparedStatement.setString(1, ls_comp_cd);
+                        preparedStatement.setInt(2, emp_id);
+                        preparedStatement.setString(3, INSURANCETHROUGH);
+                        preparedStatement.setInt(4, ID);
+                        preparedStatement.setString(5, INSURANCETYPE);
+                        preparedStatement.setString(6, INSURANCEREGNO);
+                        preparedStatement.setDate(7, INSURANCESTARTDATE);
+                        preparedStatement.setDate(8, INSURANCEENDDATE);                       
+                        preparedStatement.setString(9, INSURANESTATUS);
+                        preparedStatement.setDate(10, INSURANCEINACTIVEDT);
+                        preparedStatement.setString(11, INSURANCEAGENCY);
+                        preparedStatement.setInt(12, INSU_AGENCY);
+                        preparedStatement.setInt(13, INSU_CUST_NO);
+                        preparedStatement.setDouble(14, INSURANCEAMOUNT);
+                        preparedStatement.setBlob(15, POLICY_BLOB);
+                        
+                       
+                        row = preparedStatement.executeUpdate();
+                    } catch (Exception e) {
+                        row = 0;
+                        Utility.PrintMessage("Error in Create Insurance: " + e);
+                        // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    }
+                } else {
+                    row = 0;
+                }
+            }
+        }
+        return row;
+    }
+    
+    public static int updateInsu(Connection con, JSONArray insuData, String ls_comp_cd,int emp_id) throws JSONException {
+        int row = 0;
+        for (int i = 0; i < insuData.length(); i++) {
+            JSONObject updateMem = new JSONObject();
+            updateMem = (JSONObject) insuData.get(i);
+
+            int id = updateMem.getInt("INSU_ID");
+            String UPDATE_FLAG = NVL.StringNvl(updateMem.getString("UPDATE_FLAG"));
+            JSONObject updateData = new JSONObject(updateMem.getString("DATA"));
+            
+            String INSURANCEAGENCY = NVL.StringNvl(updateData.getString("INSURANCEAGENCY"));
+            String INSURANCEREGNO = NVL.StringNvl(updateData.getString("INSURANCEREGNO"));
+            Double INSURANCEAMOUNT = 0.00;
+            if (updateData.getString("INSURANCEAMOUNT") == null || updateData.getString("INSURANCEAMOUNT").equals("")) {
+            	INSURANCEAMOUNT = 0.00;
+            } else {
+            	INSURANCEAMOUNT = updateData.getDouble("INSURANCEAMOUNT");            			
+            }
+            String INSURANCETYPE = NVL.StringNvl(updateData.getString("INSURANCETYPE"));
+            Date INSURANCEINACTIVEDT = null;
+            if (updateData.getString("INSURANCEINACTIVEDT") == null || updateData.getString("INSURANCEINACTIVEDT").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(updateData.getString("INSURANCEINACTIVEDT"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            Date INSURANCEENDDATE = null;
+            if (updateData.getString("INSURANCEENDDATE") == null || updateData.getString("INSURANCEENDDATE").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(updateData.getString("INSURANCEENDDATE"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            String INSURANCETHROUGH = NVL.StringNvl(updateData.getString("INSURANCETHROUGH"));
+            Date INSURANCESTARTDATE = null;
+            if (updateData.getString("INSURANCESTARTDATE") == null || updateData.getString("INSURANCESTARTDATE").equals("")) {
+            	INSURANCEINACTIVEDT = null;
+            } else {
+            	INSURANCEINACTIVEDT = Date.valueOf(updateData.getString("INSURANCESTARTDATE"));
+                //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
+            }
+            String INSURANESTATUS = NVL.StringNvl(updateData.getString("INSURANESTATUS"));
+            int INSU_AGENCY = 0;
+            if (updateData.getString("INSU_AGENCY") == null || updateData.getString("INSU_AGENCY").equals("")) {
+            	INSU_AGENCY = 0;
+            } else {
+            	INSU_AGENCY = updateData.getInt("INSU_AGENCY");
+            } 
+            int INSU_CUST_NO = 0;
+            if (updateData.getString("INSU_CUST_NO") == null || updateData.getString("INSU_CUST_NO").equals("")) {
+            	INSU_CUST_NO = 0;
+            } else {
+            	INSU_CUST_NO = updateData.getInt("INSU_CUST_NO");
+            } 
+
+
+            if (UPDATE_FLAG.equals("Y")) {
+                JSONObject jOut = new JSONObject();
+                String sql = "UPDATE emp_insurance_mst SET COMP_CD =? , EMP_ID =?, INSU_THROUGH = ?, INSU_ID = ?, INSU_TYPE = ?, INSU_REG_NO = ?, INSU_BOOK_NO = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?, INSU_INACTIVE_DT = ?, INSU_AGENCY = ?, INSU_AGENCY_ID = ?, INSU_CUST_NO = ?, INSU_PREMIUM = ?, INSU_DOC_POLICY = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND INSU_ID = ? EMP_ID = ?";
+                PreparedStatement preparedStatement = null;
+
+                try {
+                	preparedStatement = con.prepareStatement(sql);                                              
+                    preparedStatement.setString(1, ls_comp_cd);
+                    preparedStatement.setInt(2, emp_id);
+                    preparedStatement.setString(3, INSURANCETHROUGH);                   
+                    preparedStatement.setString(4, INSURANCETYPE);
+                    preparedStatement.setString(5, INSURANCEREGNO);
+                    preparedStatement.setDate(6, INSURANCESTARTDATE);
+                    preparedStatement.setDate(7, INSURANCEENDDATE);                       
+                    preparedStatement .setString(9, INSURANESTATUS);
+                    preparedStatement.setDate(9, INSURANCEINACTIVEDT);
+                    preparedStatement.setString(10, INSURANCEAGENCY);
+                    preparedStatement.setInt(11, INSU_AGENCY);
+                    preparedStatement.setInt(12, INSU_CUST_NO);
+                    preparedStatement.setDouble(13, INSURANCEAMOUNT);
+
+                    row = preparedStatement.executeUpdate();
+                } catch (Exception e) {
+                    row = 0;
+                    Utility.PrintMessage("Error in Update Insurance Master : " + e);
+                    // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                }
+            } else {
+                row = 0;
+            }
+        }
+        return 0;
     }
 
 }

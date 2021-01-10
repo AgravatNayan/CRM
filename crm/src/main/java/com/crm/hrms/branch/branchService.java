@@ -608,13 +608,13 @@ public class branchService {
 		            }
 		            int CITY_CD = 0;
 		            if (jReuqest.getString("CITY_CD") == null || jReuqest.getString("CITY_CD").equals("")) {
-		            	STATE_CD = 0;
+		            	CITY_CD = 0;
 		            } else {
-		            	STATE_CD = jReuqest.getInt("CITY_CD");
+		            	CITY_CD = jReuqest.getInt("CITY_CD");
 		            }
 		            		
 		            String PIN_CODE =NVL.StringNvl(jReuqest.getString("PIN_CODE"));
-		            String ACTIVE_STATUE =NVL.StringNvl(jReuqest.getString("ACTIVE_STATUE"));
+//		            String ACTIVE_STATUE =NVL.StringNvl(jReuqest.getString("ACTIVE_STATUS"));
 		            Date INACTIVE_DATE = null;
 		            if (jReuqest.getString("INACTIVE_DATE") == null || jReuqest.getString("INACTIVE_DATE").equals("")) {
 		            	INACTIVE_DATE = null;
@@ -657,7 +657,7 @@ public class branchService {
 		            
 		            
 	  	            if (UPDATE_FLAG.equals("Y")) {
-	  	            	String updateEmployee = "UPDATE branch_mst SET COMP_CD = ?, BRANCH_NM = ?, BRANCH_OPENING_DT = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, ACTIVE_STATUE = ?, INACTIVE_DATE = ?, LANDLINE_NO = ?, CONTACT_PERSON = ?, BRANCH_CONTACT = ?, BRANCH_EMAIL = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, ACTIVE_STATUS = ?, INACTIVE_DT = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND IS_DELETE = ?";	
+	  	            	String updateEmployee = "UPDATE branch_mst SET COMP_CD = ?, BRANCH_NM = ?, BRANCH_OPENING_DT = ?, ADDRESS_1 = ?, ADDRESS_2 = ?, ADDRESS_3 = ?, CONTRAY_CD = ?, STATE_CD = ?, CITY_CD = ?, PIN_CODE = ?, ACTIVE_STATUS = ?, INACTIVE_DATE = ?, LANDLINE_NO = ?, CONTACT_PERSON = ?, BRANCH_CONTACT = ?, BRANCH_EMAIL = ?, LAST_ENTERED_BY = ?, LAST_ENTERED_IP = ?, LAST_ENTERED_DATE = ?, INACTIVE_DT = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND IS_DELETE = ?";	
 	  	            	PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);	               
 
 	  	            	preparedStatement.setString(1,COMP_CD);
@@ -670,7 +670,7 @@ public class branchService {
 	  		            preparedStatement.setInt(8,STATE_CD);
 	  		            preparedStatement.setInt(9,CITY_CD);
 	  		            preparedStatement.setString(10,PIN_CODE);
-	  	                preparedStatement.setString(11,ACTIVE_STATUE);
+	  	                preparedStatement.setString(11,ACTIVE_STATUS);
 	  	                preparedStatement.setDate(12,INACTIVE_DATE);
 	  	                preparedStatement.setInt(13,LANDLINE_NO);
 	  	                preparedStatement.setString(14,CONTACT_PERSON);
@@ -678,15 +678,13 @@ public class branchService {
 	  	                preparedStatement.setString(16,BRANCH_EMAIL);
 	  		            preparedStatement.setString(17,LAST_ENTERED_BY);
 	  		            preparedStatement.setString(18,LAST_ENTERED_IP);
-	  		            preparedStatement.setDate(19,LAST_ENTERED_DATE);
-	  		            preparedStatement.setString(20,ACTIVE_STATUS);
-	  		            preparedStatement.setDate(21,INACTIVE_DT);
+	  		            preparedStatement.setDate(19,LAST_ENTERED_DATE);	  		            
+	  		            preparedStatement.setDate(20,INACTIVE_DT);
 	  		            
-	  		            preparedStatement.setString(22,COMP_CD);
-	  		            preparedStatement.setString(23,BRANCH_CD);
-	  		            preparedStatement.setString(24,"N");
-	  		            
-	  		            
+	  		            preparedStatement.setString(21,COMP_CD);
+	  		            preparedStatement.setString(22,BRANCH_CD);
+	  		            preparedStatement.setString(23,"N");
+	  		           
 		                int row = preparedStatement.executeUpdate();
                       
 		                if (row == 0) {
@@ -744,7 +742,8 @@ public class branchService {
 	            }                                                                                              
 	        } catch (Exception e) {
 	            Utility.PrintMessage("Error in Update Branch : " + e);
-	            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+	            String ls_error = e.getMessage().replace("\"","");
+	            response = "{\"STATUS_CD\":\"99\",\"ERROR\":\""+ls_error+",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
 	        } finally {
 	            try {
 	                rs.close();

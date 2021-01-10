@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crm.hrm.salary.salaryService;
 import com.crm.hrms.branch.branchService;
 import com.crm.hrms.company.companyService;
 import com.crm.hrms.contract.contractTypeService;
@@ -485,8 +486,58 @@ public class CrmApplication {
                     ls_output = companyService.GetMaxBoradMemtID(con, input).toString();
                 } catch (Exception e) {
                     System.out.println("Get Max Board Error :" + e);
-                }                                                     
-            } else {
+                }                                     
+            } else if (ls_action.equals("SALARYHEADMAXTRANCD")) { // Get Salary Max Tran cd
+                try {
+                    ls_output = salaryService.GetMaxSalaryTranCD(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Max Salary Tran cd :" + e);
+                }                                     
+            } else if (ls_action.equals("SALARYMAXHEADCD")) { // Get Salary Max Sr cd
+                try {
+                    ls_output = salaryService.GetMaxSalaryHeadCD(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Max Salary Sr Cd:" + e);
+                }                                     
+            } else if (ls_action.equals("SALARYHEADLIST")) { // get Salary Head Detail
+                try {
+                    ls_output = salaryService.getSalaryHeadList(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Salary Head List :" + e);
+                }                                     
+            } else if (ls_action.equals("DELETESALARYHEAD")) { // Delete Salary Head Detail
+                try {
+                    ls_output = salaryService.deleteSalaryHead(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Delete Salary Head Detail:" + e);
+                }                                     
+            } else if (ls_action.equals("CREATESALARYHEAD")) { // Create Salary Head
+                try {
+                    ls_output = salaryService.CreateSalaryHead(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Create Salary Head :" + e);
+                }                                     
+            } else if (ls_action.equals("UPDATESALARYHEAD")) { // Update Salary Head
+                try {
+                    ls_output = salaryService.UpdateSalaryHead(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Update Salary Head :" + e);
+                }                                     
+            }
+            
+            
+
+            
+            
+            
+            
+            
+            
+             
+            
+            
+            
+            else {
                 ls_output = "Kindly check your header action";
             }                                                                                                
             return ls_output;

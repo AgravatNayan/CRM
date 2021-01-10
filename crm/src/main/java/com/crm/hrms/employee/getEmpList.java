@@ -580,7 +580,7 @@ public class getEmpList {
                 }
             } catch (Exception e) {
                 Utility.PrintMessage("Error in Delete Insurance Details : " + e);
-                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
             }
             
             
@@ -592,7 +592,7 @@ public class getEmpList {
                 }
             } catch (Exception e) {
                 Utility.PrintMessage("Error in Insert Board Member Details : " + e);
-                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
             }
               
             JSONArray insuranceUpdate = new JSONArray(jReuqest.getString("INSURANCELISTUPDATE"));
@@ -603,7 +603,7 @@ public class getEmpList {
                 }
             } catch (Exception e) {
                 Utility.PrintMessage("Error in Update Board Member Details : " + e);
-                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
             }
             
             
@@ -963,19 +963,25 @@ public class getEmpList {
                     }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Delete Insurance Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
                 
                 
                 JSONArray insuranceInsert = new JSONArray(jReuqest.getString("INSURANCELISTINSERT"));
                 int j = 0;
+                System.out.println(insuranceInsert);
                 try {
                     if (insuranceInsert.length() > 0) {
                         j = insertInsu(con, insuranceInsert, COMP_CD, EMP_ID);
                     }
+                    
+                    if (j == 99) {
+                    	//Utility.PrintMessage("Error in Update Board Member Details : " + e);
+                        return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Insurance Id Already Inserted.\"}";
+                    }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Insert Board Member Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
                   
                 JSONArray insuranceUpdate = new JSONArray(jReuqest.getString("INSURANCELISTUPDATE"));
@@ -986,7 +992,7 @@ public class getEmpList {
                     }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Update Board Member Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                   return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
                 
                 
@@ -1180,14 +1186,14 @@ public class getEmpList {
             deleteInsu = (JSONObject) insuData.get(i);
 
             int id = deleteInsu.getInt("INSU_ID");
-            String ls_flag = deleteInsu.getString("DELETE_FLAG");
+//            String ls_flag = deleteInsu.getString("DELETE_FLAG");
             String sql = null;
-            if (ls_flag.equals("Y")) {
+//            if (ls_flag.equals("Y")) {
                 sql = "UPDATE emp_insurance_mst SET IS_DELETE = 'Y' WHERE COMP_CD = '" + comp_cd + "' AND INSU_ID =" + id;
                 stmt = con.createStatement();
                 row = stmt.executeUpdate(sql);
                 row = row + 1;
-            }
+//            }
         }
         return row;
     }
@@ -1199,7 +1205,7 @@ public class getEmpList {
             insertMem = (JSONObject) insuData.get(i);
 
 
-            String INSERT_FLAG = NVL.StringNvl(insertMem.getString("INSERT_FLAG"));
+            //String INSERT_FLAG = NVL.StringNvl(insertMem.getString("INSERT_FLAG"));
             
             int ID = 0;
             if (insertMem.getString("SRCD") == null || insertMem.getString("SRCD").equals("")) {
@@ -1239,24 +1245,24 @@ public class getEmpList {
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
             String INSURANESTATUS = NVL.StringNvl(insertMem.getString("INSURANESTATUS"));
-            int INSU_AGENCY = 0;
-            if (insertMem.getString("INSU_AGENCY") == null || insertMem.getString("INSU_AGENCY").equals("")) {
-            	INSU_AGENCY = 0;
-            } else {
-            	INSU_AGENCY = insertMem.getInt("INSU_AGENCY");
-            } 
-            int INSU_CUST_NO = 0;
-            if (insertMem.getString("INSU_CUST_NO") == null || insertMem.getString("INSU_CUST_NO").equals("")) {
-            	INSU_CUST_NO = 0;
-            } else {
-            	INSU_CUST_NO = insertMem.getInt("INSU_CUST_NO");
-            } 
-            
-            String POLICY = NVL.StringNvl(insertMem.getString("POLICY"));
-            byte[] POLICY_BUTE = POLICY.getBytes();
-        	
-        	
-        	Blob POLICY_BLOB = new SerialBlob(POLICY_BUTE);
+//            int INSU_AGENCY = 0;
+//            if (insertMem.getString("INSU_AGENCY") == null || insertMem.getString("INSU_AGENCY").equals("")) {
+//            	INSU_AGENCY = 0;
+//            } else {
+//            	INSU_AGENCY = insertMem.getInt("INSU_AGENCY");
+//            } 
+//            int INSU_CUST_NO = 0;
+//            if (insertMem.getString("INSU_CUST_NO") == null || insertMem.getString("INSU_CUST_NO").equals("")) {
+//            	INSU_CUST_NO = 0;
+//            } else {
+//            	INSU_CUST_NO = insertMem.getInt("INSU_CUST_NO");
+//            } 
+//            
+//            String POLICY = NVL.StringNvl(insertMem.getString("POLICY"));
+//            byte[] POLICY_BUTE = POLICY.getBytes();
+//        	
+//        	
+//        	Blob POLICY_BLOB = new SerialBlob(POLICY_BUTE);
      	
             
             
@@ -1274,9 +1280,9 @@ public class getEmpList {
             }
 
             if (cnt <= 0) {
-                if (INSERT_FLAG.equals("Y")) {
+               // if (INSERT_FLAG.equals("Y")) {
                     JSONObject jOut = new JSONObject();
-                    String sql = "INSERT INTO emp_insurance_mst (COMP_CD, EMP_ID, INSU_THROUGH, INSU_ID, INSU_TYPE, INSU_REG_NO, INSU_START_DT, INSU_END_DT, INSU_STATUS, INSU_INACTIVE_DT, INSU_AGENCY, INSU_AGENCY_ID, INSU_CUST_NO, INSU_PREMIUM, INSU_DOC_POLICY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    String sql = "INSERT INTO emp_insurance_mst (COMP_CD, EMP_ID, INSU_THROUGH, INSU_ID, INSU_TYPE, INSU_REG_NO, INSU_START_DT, INSU_END_DT, INSU_STATUS, INSU_INACTIVE_DT, INSU_AGENCY_ID, INSU_PREMIUM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement preparedStatement = null;
 
                     try {
@@ -1292,10 +1298,10 @@ public class getEmpList {
                         preparedStatement.setString(9, INSURANESTATUS);
                         preparedStatement.setDate(10, INSURANCEINACTIVEDT);
                         preparedStatement.setString(11, INSURANCEAGENCY);
-                        preparedStatement.setInt(12, INSU_AGENCY);
-                        preparedStatement.setInt(13, INSU_CUST_NO);
-                        preparedStatement.setDouble(14, INSURANCEAMOUNT);
-                        preparedStatement.setBlob(15, POLICY_BLOB);
+//                        preparedStatement.setInt(12, INSU_AGENCY);
+//                        preparedStatement.setInt(12, INSU_CUST_NO);
+                        preparedStatement.setDouble(12, INSURANCEAMOUNT);
+//                        preparedStatement.setBlob(14, POLICY_BLOB);
                         
                        
                         row = preparedStatement.executeUpdate();
@@ -1304,10 +1310,13 @@ public class getEmpList {
                         Utility.PrintMessage("Error in Create Insurance: " + e);
                         // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                     }
-                } else {
-                    row = 0;
-                }
+//                } else {
+//                    row = 0;
+//                }
+            } else {
+            	row = 99;
             }
+            	
         }
         return row;
     }
@@ -1319,7 +1328,7 @@ public class getEmpList {
             updateMem = (JSONObject) insuData.get(i);
 
             int id = updateMem.getInt("INSU_ID");
-            String UPDATE_FLAG = NVL.StringNvl(updateMem.getString("UPDATE_FLAG"));
+//            String UPDATE_FLAG = NVL.StringNvl(updateMem.getString("UPDATE_FLAG"));
             JSONObject updateData = new JSONObject(updateMem.getString("DATA"));
             
             String INSURANCEAGENCY = NVL.StringNvl(updateData.getString("INSURANCEAGENCY"));
@@ -1354,23 +1363,23 @@ public class getEmpList {
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
             String INSURANESTATUS = NVL.StringNvl(updateData.getString("INSURANESTATUS"));
-            int INSU_AGENCY = 0;
-            if (updateData.getString("INSU_AGENCY") == null || updateData.getString("INSU_AGENCY").equals("")) {
-            	INSU_AGENCY = 0;
-            } else {
-            	INSU_AGENCY = updateData.getInt("INSU_AGENCY");
-            } 
-            int INSU_CUST_NO = 0;
-            if (updateData.getString("INSU_CUST_NO") == null || updateData.getString("INSU_CUST_NO").equals("")) {
-            	INSU_CUST_NO = 0;
-            } else {
-            	INSU_CUST_NO = updateData.getInt("INSU_CUST_NO");
-            } 
+//            int INSU_AGENCY = 0;
+//            if (updateData.getString("INSU_AGENCY") == null || updateData.getString("INSU_AGENCY").equals("")) {
+//            	INSU_AGENCY = 0;
+//            } else {
+//            	INSU_AGENCY = updateData.getInt("INSU_AGENCY");
+//            } 
+//            int INSU_CUST_NO = 0;
+//            if (updateData.getString("INSU_CUST_NO") == null || updateData.getString("INSU_CUST_NO").equals("")) {
+//            	INSU_CUST_NO = 0;
+//            } else {
+//            	INSU_CUST_NO = updateData.getInt("INSU_CUST_NO");
+//            } 
 
 
-            if (UPDATE_FLAG.equals("Y")) {
+//            if (UPDATE_FLAG.equals("Y")) {
                 JSONObject jOut = new JSONObject();
-                String sql = "UPDATE emp_insurance_mst SET COMP_CD =? , EMP_ID =?, INSU_THROUGH = ?, INSU_ID = ?, INSU_TYPE = ?, INSU_REG_NO = ?, INSU_BOOK_NO = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?, INSU_INACTIVE_DT = ?, INSU_AGENCY = ?, INSU_AGENCY_ID = ?, INSU_CUST_NO = ?, INSU_PREMIUM = ?, INSU_DOC_POLICY = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND INSU_ID = ? EMP_ID = ?";
+                String sql = "UPDATE emp_insurance_mst SET COMP_CD =? , EMP_ID =?, INSU_THROUGH = ?, INSU_ID = ?, INSU_TYPE = ?, INSU_REG_NO = ?, INSU_BOOK_NO = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?, INSU_INACTIVE_DT = ?, INSU_AGENCY_ID = ?, INSU_PREMIUM = ?, INSU_DOC_POLICY = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND INSU_ID = ? EMP_ID = ?";
                 PreparedStatement preparedStatement = null;
 
                 try {
@@ -1385,9 +1394,9 @@ public class getEmpList {
                     preparedStatement .setString(9, INSURANESTATUS);
                     preparedStatement.setDate(9, INSURANCEINACTIVEDT);
                     preparedStatement.setString(10, INSURANCEAGENCY);
-                    preparedStatement.setInt(11, INSU_AGENCY);
-                    preparedStatement.setInt(12, INSU_CUST_NO);
-                    preparedStatement.setDouble(13, INSURANCEAMOUNT);
+//                    preparedStatement.setInt(11, INSU_AGENCY);
+//                    preparedStatement.setInt(11, INSU_CUST_NO);
+                    preparedStatement.setDouble(11, INSURANCEAMOUNT);
 
                     row = preparedStatement.executeUpdate();
                 } catch (Exception e) {
@@ -1395,9 +1404,9 @@ public class getEmpList {
                     Utility.PrintMessage("Error in Update Insurance Master : " + e);
                     // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
-            } else {
-                row = 0;
-            }
+//            } else {
+//                row = 0;
+//            }
         }
         return 0;
     }

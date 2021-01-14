@@ -153,6 +153,8 @@ public class salaryService {
                     jObject.put("COMP_CD", NVL.StringNvl(rs.getString("COMP_CD")));
                     jObject.put("TRAN_CD", NVL.StringNvl(rs.getString("TRAN_CD")));
                     jObject.put("TEMP_NAME", NVL.StringNvl(rs.getString("TEMP_NAME")));
+                    jObject.put("ID", NVL.StringNvl(rs.getString("TRAN_CD")));
+                    jObject.put("NAME", NVL.StringNvl(rs.getString("TEMP_NAME")));
                     jObject.put("APP_FROM_DT", NVL.StringNvl(rs.getString("APP_FROM_DT")));
                     jObject.put("APP_TO_DT", NVL.StringNvl(rs.getString("APP_TO_DT")));
                     jObject.put("ENTERED_DATE", NVL.StringNvl(rs.getString("ENTERED_DATE")));

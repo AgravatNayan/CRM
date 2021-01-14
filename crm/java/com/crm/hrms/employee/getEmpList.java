@@ -886,7 +886,7 @@ public class getEmpList {
                     CONTRACT_TYPE = jReuqest.getString("CONTRACT_TYPE");
                 }
                 Date CONTRACT_SIGNED_DATE = null;
-                if (jReuqest.getString("RETIREMENT_DT") == null || jReuqest.getString("RETIREMENT_DT").equals("")) {
+                if (jReuqest.getString("CONTRACT_SIGNED_DATE") == null || jReuqest.getString("CONTRACT_SIGNED_DATE").equals("")) {
                     CONTRACT_SIGNED_DATE = null;
                 } else {
                     CONTRACT_SIGNED_DATE = Date.valueOf(jReuqest.getString("CONTRACT_SIGNED_DATE"));  
@@ -1269,7 +1269,7 @@ public class getEmpList {
             Statement stmt = null;
             ResultSet rs = null;
 
-            String ls_sql = "SELECT COUNT(*) AS CNT FROM emp_insurance_mst WHERE INSU_ID =" + ID + " AND IS_DELETE = 'N'";
+            String ls_sql = "SELECT COUNT(*) AS CNT FROM emp_insurance_mst WHERE COMP_CD = '"+ls_comp_cd+"' AND EMP_ID ="+emp_id+" AND INSU_ID =" + ID + " AND IS_DELETE = 'N'";
             System.out.println(ls_sql);
             stmt = con.createStatement();
             rs = stmt.executeQuery(ls_sql);
@@ -1349,17 +1349,17 @@ public class getEmpList {
             }
             Date INSURANCEENDDATE = null;
             if (updateData.getString("INSURANCEENDDATE") == null || updateData.getString("INSURANCEENDDATE").equals("")) {
-            	INSURANCEINACTIVEDT = null;
+            	INSURANCEENDDATE = null;
             } else {
-            	INSURANCEINACTIVEDT = Date.valueOf(updateData.getString("INSURANCEENDDATE"));
+            	INSURANCEENDDATE = Date.valueOf(updateData.getString("INSURANCEENDDATE"));
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
             String INSURANCETHROUGH = NVL.StringNvl(updateData.getString("INSURANCETHROUGH"));
             Date INSURANCESTARTDATE = null;
             if (updateData.getString("INSURANCESTARTDATE") == null || updateData.getString("INSURANCESTARTDATE").equals("")) {
-            	INSURANCEINACTIVEDT = null;
+            	INSURANCESTARTDATE = null;
             } else {
-            	INSURANCEINACTIVEDT = Date.valueOf(updateData.getString("INSURANCESTARTDATE"));
+            	INSURANCESTARTDATE = Date.valueOf(updateData.getString("INSURANCESTARTDATE"));
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
             String INSURANESTATUS = NVL.StringNvl(updateData.getString("INSURANESTATUS"));
@@ -1379,24 +1379,30 @@ public class getEmpList {
 
 //            if (UPDATE_FLAG.equals("Y")) {
                 JSONObject jOut = new JSONObject();
-                String sql = "UPDATE emp_insurance_mst SET COMP_CD =? , EMP_ID =?, INSU_THROUGH = ?, INSU_ID = ?, INSU_TYPE = ?, INSU_REG_NO = ?, INSU_BOOK_NO = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?, INSU_INACTIVE_DT = ?, INSU_AGENCY_ID = ?, INSU_PREMIUM = ?, INSU_DOC_POLICY = ? WHERE COMP_CD = ? AND BRANCH_CD = ? AND INSU_ID = ? EMP_ID = ?";
+                String sql = "UPDATE emp_insurance_mst SET INSU_THROUGH = ?,  INSU_TYPE = ?, INSU_REG_NO = ?, INSU_START_DT = ?, INSU_END_DT = ?, INSU_STATUS = ?, INSU_INACTIVE_DT = ?, INSU_AGENCY_ID = ?, INSU_PREMIUM = ? WHERE INSU_ID = ? AND EMP_ID = ?";
                 PreparedStatement preparedStatement = null;
 
                 try {
                 	preparedStatement = con.prepareStatement(sql);                                              
-                    preparedStatement.setString(1, ls_comp_cd);
-                    preparedStatement.setInt(2, emp_id);
-                    preparedStatement.setString(3, INSURANCETHROUGH);                   
-                    preparedStatement.setString(4, INSURANCETYPE);
-                    preparedStatement.setString(5, INSURANCEREGNO);
-                    preparedStatement.setDate(6, INSURANCESTARTDATE);
-                    preparedStatement.setDate(7, INSURANCEENDDATE);                       
-                    preparedStatement .setString(9, INSURANESTATUS);
-                    preparedStatement.setDate(9, INSURANCEINACTIVEDT);
-                    preparedStatement.setString(10, INSURANCEAGENCY);
+                    
+                    preparedStatement.setString(1, INSURANCETHROUGH);                   
+                    preparedStatement.setString(2, INSURANCETYPE);
+                    preparedStatement.setString(3, INSURANCEREGNO);
+                    preparedStatement.setDate(4, INSURANCESTARTDATE);
+                    preparedStatement.setDate(5, INSURANCEENDDATE);                       
+                    preparedStatement .setString(6, INSURANESTATUS);
+                    preparedStatement.setDate(7, INSURANCEINACTIVEDT);
+                    preparedStatement.setString(8, INSURANCEAGENCY);
 //                    preparedStatement.setInt(11, INSU_AGENCY);
 //                    preparedStatement.setInt(11, INSU_CUST_NO);
-                    preparedStatement.setDouble(11, INSURANCEAMOUNT);
+                    preparedStatement.setDouble(9, INSURANCEAMOUNT);
+                                        
+                    preparedStatement.setDouble(10, id);                    
+                    preparedStatement.setInt(11, emp_id);
+                    
+                    
+                    
+                    
 
                     row = preparedStatement.executeUpdate();
                 } catch (Exception e) {

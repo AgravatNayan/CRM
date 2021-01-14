@@ -92,10 +92,10 @@ public class contractTypeService {
 	   try {	
 		   if (viewType.equals("G")) {
 	            ls_query = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM\r\n" + 
-	            		"FROM CONTRACT_TYPE_MST WHERE CONTRACT_STATUS = 'Y' AND IS_DELETE = 'N'";
+	            		"FROM CONTRACT_TYPE_MST WHERE IS_DELETE = 'N'";
 		   } else {
 			   ls_query = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM\r\n" + 
-	            		"FROM CONTRACT_TYPE_MST WHERE ENTERED_BY = '"+ls_username+"' AND CONTRACT_STATUS = 'Y' AND IS_DELETE = 'N'";			   
+	            		"FROM CONTRACT_TYPE_MST WHERE ENTERED_BY = '"+ls_username+"' AND IS_DELETE = 'N'";			   
 		   }
 	            Statement stmt = null;
 	            stmt = con.createStatement();
@@ -167,9 +167,9 @@ public class contractTypeService {
 	            JSONObject jOut = new JSONObject();
 	            String sql = null;
 	            if (viewFlag.equals("G")) {
-	                sql = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM FROM CONTRACT_TYPE_MST WHERE CONTRACT_STATUS = 'Y' AND CONTRACT_ID = "+ls_contract_id+" AND IS_DELETE = 'N'";
+	                sql = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM FROM CONTRACT_TYPE_MST WHERE CONTRACT_STATUS = 'Y' AND CONTRACT_ID = "+ls_contract_id;
 	            } else {
-	                sql = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM FROM CONTRACT_TYPE_MST WHERE ENTERED_BY = '" + userName + "' AND CONTRACT_STATUS = 'Y' AND CONTRACT_ID = "+ls_contract_id+" AND IS_DELETE = 'N'";
+	                sql = "SELECT COMP_CD,CONTRACT_ID,CON_START_DT,CON_END_DT,SALARY_TEMP_CD,CONTRACT_STATUS,CONTRACT_INACTIVE_DT,CONTRACT_NM FROM CONTRACT_TYPE_MST WHERE ENTERED_BY = '" + userName + "' AND CONTRACT_STATUS = 'Y' AND CONTRACT_ID = "+ls_contract_id;
 
 	            }
 
@@ -252,7 +252,7 @@ public class contractTypeService {
 	            JSONObject jin = new JSONObject(ls_request);
 	            System.out.println(jin.toString());	
 	            
-	            String ls_insert_flag = jin.getString("INSERT_FALG");
+	            String ls_insert_flag = jin.getString("CREATE_FLAG");
 	            
 	            JSONObject jReuqest = new JSONObject();
 	            jReuqest = jin.getJSONObject("REQUEST_DATA");
@@ -325,14 +325,14 @@ public class contractTypeService {
                 preparedStatement.setInt(5,SALARY_TEMP_CD);
                 preparedStatement.setString(6,CONTRACT_STATUS);
                 preparedStatement.setDate(7,CONTRACT_INACTIVE_DT);
-                preparedStatement.setString(8,CONTRACT_NM);
-                preparedStatement.setDate(9,ENTERED_DATE);
-                preparedStatement.setString(10,ENTERED_BY);
-                preparedStatement.setString(11,ENTERED_IP);
-                preparedStatement.setDate(12,LAST_MODIFIED_DT);
-                preparedStatement.setString(13,LAST_MODIFIED_BY);
-	            preparedStatement.setString(14,LAST_MODOFIED_IP);
-
+                preparedStatement.setString(8,CONTRACT_NM);               
+                preparedStatement.setString(9,ENTERED_BY);
+                preparedStatement.setString(10,ENTERED_IP);
+                preparedStatement.setDate(11,ENTERED_DATE);                
+                preparedStatement.setString(12,LAST_MODIFIED_BY);
+	            preparedStatement.setString(13,LAST_MODOFIED_IP);
+	            preparedStatement.setDate(14,LAST_MODIFIED_DT);
+	            
                 int row = preparedStatement.executeUpdate();
 
                 if (row == 0) {

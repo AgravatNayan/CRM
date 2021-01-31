@@ -29,7 +29,7 @@ public class departmentService {
 	    String ls_req_ip = request.getString("REQUEST_IP");
 	    
 	          try {
-	            String ls_query = "SELECT DEPART_ID,NAME FROM DEPRTMENT_MST";
+	            String ls_query = "SELECT DEPART_ID,NAME FROM DEPRTMENT_MST WHERE ACTIVE_STATUS = 'Y' AND IS_DELETE = 'N'";
 	            Statement stmt = null;
 	            stmt = con.createStatement();
 	            rs = stmt.executeQuery(ls_query);

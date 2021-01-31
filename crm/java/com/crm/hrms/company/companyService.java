@@ -1,4 +1,4 @@
-package com.crm.hrms.company;
+	package com.crm.hrms.company;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -43,7 +43,7 @@ public class companyService {
             response = jOut.toString();
         } catch (Exception e) {
             Utility.PrintMessage("Error in GetMax Borad Member Id : " + e);
-            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error :"+e.getMessage().replace("\"", "")+").\"}";
         } finally {
             try {
                 rs.close();
@@ -140,7 +140,7 @@ public class companyService {
                 mainObject.put("RESPONSE", jArray);
             } catch (Exception e) {
                 Utility.PrintMessage("Error in Get Company Details: " + e);
-                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error :"+e.getMessage().replace("\"", "")+").\"}";
             }
             return mainObject.toString();
         }
@@ -187,7 +187,7 @@ public class companyService {
                 response = new JSONObject();
                 Utility.PrintMessage("Error in Get Board Member Details: " + e);
                 response.put("STATUS_CD", "99");
-                response.put("MESSAGE", "Something went to wrong,Please try after some time.");
+                response.put("MESSAGE", "Something went to wrong,Please try after some time "+e.getMessage().replace("\"", "")+".");
                 jArray.put(response);
             }
         } else {
@@ -310,18 +310,19 @@ public class companyService {
                     }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Delete Board Member Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error :"+e.getMessage().replace("\"","")+").\"}";
                 }
 
                 JSONArray UpdateMem = new JSONArray(NVL.StringNvl(jReuqest.getString("UPDATE_BOARD_MEM")));
                 int k = 0;
                 try {
+                		
                     if (UpdateMem.length() > 0) {
                         k = updateMem(con, UpdateMem, COMP_CD);
                     }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Update Board Member Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error :"+e.getMessage().replace("\"","")+").\"}";
                 }
                 
                 JSONArray insertMem = new JSONArray(NVL.StringNvl(jReuqest.getString("INSERT_BOARD_MEM")));
@@ -332,7 +333,7 @@ public class companyService {
                     }
                 } catch (Exception e) {
                     Utility.PrintMessage("Error in Insert Board Member Details : " + e);
-                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                    response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error : "+e.getMessage().replace("\"", "")+").\"}";
                 }
                                                 
                 if (i > 0) {
@@ -356,6 +357,7 @@ public class companyService {
                 System.out.println("delete :"+i);
                 System.out.println("insert :"+j);
                 System.out.println("update :"+k);
+                
                 
 
                 if (UPDATE_FLAG.equals("Y")) {
@@ -456,7 +458,7 @@ public class companyService {
             }
         } catch (Exception e) {
             Utility.PrintMessage("Error in Update Company Details : " + e);
-            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time (Error :"+e.getMessage().replace("\"","")+").\"}";
         } finally {
             try {
                 rs.close();
@@ -493,14 +495,14 @@ public class companyService {
             deleteMem = (JSONObject) memData.get(i);
 
             int id = deleteMem.getInt("ID");
-            String ls_flag = deleteMem.getString("DELETE_FLAG");
+//            String ls_flag = deleteMem.getString("DELETE_FLAG");
             String sql = null;
-            if (ls_flag.equals("Y")) {
+//            if (ls_flag.equals("Y")) {
                 sql = "UPDATE COMP_DTL SET IS_DELETE = 'Y' WHERE COMP_CD = '" + comp_cd + "' AND ID =" + id;
                 stmt = con.createStatement();
                 row = stmt.executeUpdate(sql);
                 row = row + 1;
-            }
+//            }
         }
         return row;
     }
@@ -512,7 +514,7 @@ public class companyService {
             insertMem = (JSONObject) memData.get(i);
 
 
-            String INSERT_FLAG = NVL.StringNvl(insertMem.getString("INSERT_FLAG"));
+//            String INSERT_FLAG = NVL.StringNvl(insertMem.getString("INSERT_FLAG"));
             int ID = 0;
             if (insertMem.getString("ID") == null || insertMem.getString("ID").equals("")) {
                 ID = 0;
@@ -551,7 +553,7 @@ public class companyService {
             }
 
             if (cnt <= 0) {
-                if (INSERT_FLAG.equals("Y")) {
+//                if (INSERT_FLAG.equals("Y")) {
                     JSONObject jOut = new JSONObject();
                     String sql = "INSERT INTO comp_dtl (COMP_CD, ID, PARTNE_NM, ROLE, NATURE_OF_ROLE, JOINING_DT, CONTACT, REMARKS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     PreparedStatement preparedStatement = null;
@@ -571,12 +573,13 @@ public class companyService {
                     } catch (Exception e) {
                         row = 0;
                         Utility.PrintMessage("Error in Create Board Member : " + e);
-                        // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+                        //response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                     }
-                } else {
-                    row = 0;
                 }
-            }
+//                    else {
+//                    row = 0;
+//                }
+//            }
         }
         return row;
     }
@@ -586,12 +589,15 @@ public class companyService {
         for (int i = 0; i < memData.length(); i++) {
             JSONObject updateMem = new JSONObject();
             updateMem = (JSONObject) memData.get(i);
-
+            
+            
+            
+            
             int id = updateMem.getInt("ID");
-            String updateFlag = updateMem.getString("UPDATE_FLAG");
+//            String updateFlag = updateMem.getString("UPDATE_FLAG");
             JSONObject updateData = new JSONObject(updateMem.getString("DATA"));
 
-            String UPDATE_FLAG = NVL.StringNvl(updateData.getString("UPDATE_FLAG"));
+//            String UPDATE_FLAG = NVL.StringNvl(updateData.getString("UPDATE_FLAG"));
             String PARTNE_NM = NVL.StringNvl(updateData.getString("PARTNE_NM"));
             String ROLE = NVL.StringNvl(updateData.getString("ROLE"));
             String NATURE_OF_ROLE = NVL.StringNvl(updateData.getString("NATURE_OF_ROLE"));
@@ -602,16 +608,17 @@ public class companyService {
                 JOINING_DT = Date.valueOf(updateData.getString("JOINING_DT"));
                 //(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("JOINIG_DT"));
             }
-            int CONTACT = 0;
-            if (updateData.getString("CONTACT") == null || updateData.getString("CONTACT").equals("")) {
-                CONTACT = 0;
-            } else {
-                CONTACT = updateData.getInt("CONTACT");
-            }
+//            int CONTACT = 0;
+//            if (updateData.getString("CONTACT") == null || updateData.getString("CONTACT").equals("")) {
+//                CONTACT = 0;
+//            } else {
+//                CONTACT = updateData.getDouble("CONTACT");
+//            }
+            String CONTACT = NVL.StringNvl(updateData.getString("CONTACT"));
             String REMARKS = NVL.StringNvl(updateData.getString("REMARKS"));
 
-
-            if (UPDATE_FLAG.equals("Y")) {
+            System.out.println("Testjnkj");
+//            if (UPDATE_FLAG.equals("Y")) {
                 JSONObject jOut = new JSONObject();
                 String sql = "UPDATE comp_dtl SET PARTNE_NM = ?, ROLE = ?, NATURE_OF_ROLE = ?, JOINING_DT = ?, CONTACT = ?, REMARKS = ? WHERE COMP_CD = ? AND ID = ? AND IS_DELETE = ?";
                 PreparedStatement preparedStatement = null;
@@ -622,22 +629,23 @@ public class companyService {
                     preparedStatement.setString(2, ROLE);
                     preparedStatement.setString(3, NATURE_OF_ROLE);
                     preparedStatement.setDate(4, JOINING_DT);
-                    preparedStatement.setInt(5, CONTACT);
+                    preparedStatement.setString(5, CONTACT);
                     preparedStatement.setString(6, REMARKS);
 
                     preparedStatement.setString(7, ls_comp_cd);
                     preparedStatement.setInt(8, id);
-                    preparedStatement.setInt(9, 'N');
+                    preparedStatement.setString(9, "N");
 
                     row = preparedStatement.executeUpdate();
                 } catch (Exception e) {
                     row = 0;
+                    e.printStackTrace();
                     Utility.PrintMessage("Error in Update Board Member : " + e);
                     // response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
-            } else {
-                row = 0;
-            }
+//            } else {
+//                row = 0;
+//            }
         }
         return 0;
     }

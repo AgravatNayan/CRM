@@ -187,7 +187,75 @@ public class salaryService {
             }
             return response;
         }
+    
+    public static String getSalaryHeadDtl(Connection con, String requestData) throws JSONException,
+    ClassNotFoundException,
+    SQLException {
 
+        JSONObject jObject = null;
+        JSONArray jArray = new JSONArray();
+        JSONObject mainObject = new JSONObject();
+        ResultSet rs = null;
+        JSONObject request = new JSONObject(requestData);
+        JSONObject jError = new JSONObject();
+        String response = "";
+        String ls_username = request.getString("USERNAME");
+        String ls_req_ip = request.getString("REQUEST_IP");
+        String viewType = NVL.StringNvl(request.getString("VIEW_FLAG"));
+        String compCD = NVL.StringNvl(request.getString("COMP_CD"));
+        String ls_tran_cd = NVL.StringNvl(request.getString("HEAD_CD"));
+        String ls_query = null;
+        try {
+            if (viewType.equals("G")) {
+                ls_query = "SELECT COMP_CD, TRAN_CD, TEMP_NAME, APP_FROM_DT, APP_TO_DT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_mst WHERE COMP_CD = '" + compCD + "' AND TRAN_CD = "+ls_tran_cd+"  AND IS_DELETE = 'N'";
+            } else {
+                ls_query = "SELECT COMP_CD, TRAN_CD, TEMP_NAME, APP_FROM_DT, APP_TO_DT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_mst WHERE COMP_CD = '" + compCD + "' AND TRAN_CD = "+ls_tran_cd+" AND ENTERED_BY = '" + ls_username + "' AND IS_DELETE = 'N'";
+            }
+         
+            Statement stmt = null;
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(ls_query);
+
+            while (rs.next()) {
+                jObject = new JSONObject();
+                jObject.put("COMP_CD", NVL.StringNvl(rs.getString("COMP_CD")));
+                jObject.put("TRAN_CD", NVL.StringNvl(rs.getString("TRAN_CD")));
+                jObject.put("TEMP_NAME", NVL.StringNvl(rs.getString("TEMP_NAME")));
+                jObject.put("ID", NVL.StringNvl(rs.getString("TRAN_CD")));
+                jObject.put("NAME", NVL.StringNvl(rs.getString("TEMP_NAME")));
+                jObject.put("APP_FROM_DT", NVL.StringNvl(rs.getString("APP_FROM_DT")));
+                jObject.put("APP_TO_DT", NVL.StringNvl(rs.getString("APP_TO_DT")));
+                jObject.put("ENTERED_DATE", NVL.StringNvl(rs.getString("ENTERED_DATE")));
+                jObject.put("ENTERED_BY", NVL.StringNvl(rs.getString("ENTERED_BY")));
+                jObject.put("ENTERED_IP", NVL.StringNvl(rs.getString("ENTERED_IP")));
+                jObject.put("LAST_ENTERED_DATE", NVL.StringNvl(rs.getString("LAST_ENTERED_DATE")));
+                jObject.put("LAST_ENTERED_BY", NVL.StringNvl(rs.getString("LAST_ENTERED_BY")));
+                jObject.put("LAST_ENTERED_IP", NVL.StringNvl(rs.getString("LAST_ENTERED_IP")));
+
+                JSONArray jSubDetail = new JSONArray();
+                jSubDetail = jheadSubDetail(con, Integer.parseInt(NVL.StringNvl(rs.getString("TRAN_CD"))), viewType, NVL.StringNvl(rs.getString("COMP_CD")), ls_username);
+                jObject.put("HEAD_SUB_DTL", jSubDetail);
+                jArray.put(jObject);
+            }
+            if (jArray.length() <= 0) {
+                mainObject.put("STATUS_CD", "99");
+                mainObject.put("MESSAGE", "Salary Head not found");
+            } else {
+                mainObject.put("STATUS_CD", "0");
+                mainObject.put("RESPONSE", jArray);
+            }
+
+
+            response = mainObject.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utility.PrintMessage("Error in Get User List : " + e);
+            response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
+
+        }
+        return response;
+    }
+    
     public static JSONArray jheadSubDetail(Connection con, int head_cd, String ls_view_flag, String ls_comp_cd, String ls_username) throws JSONException {
         JSONObject jObject = null;
         JSONArray jArray = new JSONArray();
@@ -199,9 +267,9 @@ public class salaryService {
 
         try {
             if (ls_view_flag.equals("G")) {
-                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl WHERE COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + "";
+                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl WHERE COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + " AND IS_DELETE = 'N'";
             } else {
-                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + " AND ENTERED_BY = '" + ls_username + "'";
+                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + " AND ENTERED_BY = '" + ls_username + "' AND IS_DELETE = 'N'";
             }
            
             Statement stmt = null;
@@ -236,6 +304,64 @@ public class salaryService {
 
         return jArray;
     }
+    
+    public static String jheadSubId(Connection con, String requestData) throws JSONException {
+        JSONObject jObject = null;
+        JSONArray jArray = new JSONArray();
+        JSONObject mainObject = new JSONObject();
+        ResultSet rs = null;
+        JSONObject jError = new JSONObject();
+        String response = "";
+        String ls_query = null;
+        JSONObject jInput = new JSONObject(requestData);
+        JSONObject finalresponse = new JSONObject();
+        String ls_view_flag = jInput.getString("VIEW_FLAG");
+        String ls_comp_cd = jInput.getString("COMP_CD");
+        String ls_username = jInput.getString("USERNAME");        
+        int head_cd = Integer.parseInt(jInput.getString("HEAD_CD"));                                           
+        
+        try {
+            if (ls_view_flag.equals("G")) {
+                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl WHERE COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + "";
+            } else {
+                ls_query = "SELECT COMP_CD, TRAN_CD, SR_CD, HEAD_CD, HEAD_NM, ED_FLAG, AMT, ENTERED_DATE, ENTERED_BY, ENTERED_IP, LAST_ENTERED_DATE, LAST_ENTERED_BY, LAST_ENTERED_IP FROM salary_head_dtl COMP_CD ='" + ls_comp_cd + "' AND TRAN_CD = " + head_cd + " AND ENTERED_BY = '" + ls_username + "'";
+            }
+           
+            Statement stmt = null;
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(ls_query);
+
+            while (rs.next()) {
+                jObject = new JSONObject();
+                jObject.put("COMP_CD", NVL.StringNvl(rs.getString("COMP_CD")));
+                jObject.put("TRAN_CD", NVL.StringNvl(rs.getString("TRAN_CD")));
+                jObject.put("SR_CD", NVL.StringNvl(rs.getString("SR_CD")));
+                jObject.put("HEAD_CD", NVL.StringNvl(rs.getString("HEAD_CD")));
+                jObject.put("HEAD_NM", NVL.StringNvl(rs.getString("HEAD_NM")));
+                jObject.put("ED_FLAG", NVL.StringNvl(rs.getString("ED_FLAG")));
+                jObject.put("AMT", NVL.StringNvl(rs.getString("AMT")));
+                jArray.put(jObject);
+                
+                finalresponse.put("STATUS_CD", "0");
+                finalresponse.put("RESPONSE", jObject);
+            }
+            if (jArray.length() <= 0) {               
+            	finalresponse.put("STATUS_CD", "99");
+            	finalresponse.put("MESSAGE", "Salary Head Sub Details Not Found");                
+            }
+        } catch (Exception e) {
+            Utility.PrintMessage("Error in Get User List : " + e);
+            //JSONObject jErr = new JSONObject();
+            finalresponse.put("STATUS_CD", "99");
+            finalresponse.put("ERROR", e.getMessage());
+            finalresponse.put("MESSAGE", "Salary Head Sub Details Not Found");
+           // jArray.put(jObject);
+        }
+
+        return finalresponse.toString();
+    }
+    
+    
 
     public static String deleteSalaryHead(Connection con, String ls_request) {
         String response = "";

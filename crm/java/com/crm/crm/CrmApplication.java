@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crm.hrm.salary.getEmpWiseSalary;
+import com.crm.hrm.salary.leaveService;
 import com.crm.hrm.salary.salaryService;
 import com.crm.hrms.branch.branchService;
 import com.crm.hrms.company.companyService;
@@ -505,7 +507,13 @@ public class CrmApplication {
                 } catch (Exception e) {
                     System.out.println("Get Salary Head List :" + e);
                 }                                     
-            } else if (ls_action.equals("DELETESALARYHEAD")) { // Delete Salary Head Detail
+            } else if (ls_action.equals("GETHEADID")) { // get Salary Head Detail
+                try {
+                    ls_output = salaryService.getSalaryHeadDtl(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Salary Head List :" + e);
+                }                                     
+            }else if (ls_action.equals("DELETESALARYHEAD")) { // Delete Salary Head Detail
                 try {
                     ls_output = salaryService.deleteSalaryHead(con, input).toString();
                 } catch (Exception e) {
@@ -523,21 +531,55 @@ public class CrmApplication {
                 } catch (Exception e) {
                     System.out.println("Update Salary Head :" + e);
                 }                                     
-            }
-            
-            
-
-            
-            
-            
-            
-            
-            
-             
-            
-            
-            
-            else {
+            } else if (ls_action.equals("GETHEADID")) { // GET Salary Head ID
+                try {
+                    ls_output = salaryService.jheadSubId(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Salary Head Id :" + e);
+                }                                     
+            } else if (ls_action.equals("DELETELEAVECD")) { // Delete Leave 
+                try {
+                    ls_output = leaveService.deleteLeaveID(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Delete Leave  :" + e);
+                }                                     
+            } else if (ls_action.equals("GETLEAVECD")) { // Get Leave Cd 
+                try {
+                    ls_output = leaveService.getLeaveDtl(con, input,"D").toString();
+                } catch (Exception e) {
+                    System.out.println("Get Leave Cd :" + e);
+                }                                     
+            } else if (ls_action.equals("GETLEAVELIST")) { // Get Leave List 
+                try {
+                    ls_output = leaveService.getLeaveDtl(con, input,"L").toString();
+                } catch (Exception e) {
+                    System.out.println("Get Leave List :" + e);
+                }                                     
+            } else if (ls_action.equals("GETMAXLEAVECD")) { // Get Max Leave Cd 
+                try {
+                    ls_output = leaveService.getMaxCd(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Max Leave Cd :" + e);
+                }                                     
+            } else if (ls_action.equals("CREATELEAVE")) { // Create Leave
+                try {
+                    ls_output = leaveService.createLeave(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Create Leave Cd :" + e);
+                }                                     
+            } else if (ls_action.equals("GETEMPLOYEESALARY")) { // Get Employee Salary
+                try {
+                    ls_output = getEmpWiseSalary.getSalary(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Employee Salary :" + e);
+                }                                     
+            } else if (ls_action.equals("GETLEAVEEMPDTL")) { // Get Employee Details
+                try {
+                    ls_output = leaveService.getEmpLeaveDtl(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Employee Detail :" + e);
+                }                                     
+            } else {
                 ls_output = "Kindly check your header action";
             }                                                                                                
             return ls_output;

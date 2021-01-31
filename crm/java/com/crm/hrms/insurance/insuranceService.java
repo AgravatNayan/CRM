@@ -114,7 +114,7 @@ public class insuranceService {
 	            	jObject.put("INSU_AGENCY_ID", NVL.StringNvl(rs.getString("INSU_AGENCY_ID")));
 	            	jObject.put("INSU_CUST_NO", NVL.StringNvl(rs.getString("INSU_CUST_NO")));
 	            	jObject.put("INSU_PREMIUM", NVL.StringNvl(rs.getString("INSU_PREMIUM")));
-	            	jObject.put("INSU_DOC_POLICY", NVL.StringNvl(rs.getString("INSU_DOC_POLICY")));
+//	            	jObject.put("INSU_DOC_POLICY", NVL.StringNvl(rs.getString("INSU_DOC_POLICY")));
 	              jArray.put(jObject);
 	            }
 	            if (jArray.length() <= 0) {

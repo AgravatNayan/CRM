@@ -197,9 +197,9 @@ public class getEmpList {
             JSONObject jOut = new JSONObject();
             String sql = null;
             if (viewFlag.equals("G")) {
-                sql = "SELECT COMP_CD,BRANCH_CD,EMP_ID,ACTIVE_STATUS,ENTRY_DT,FIRST_NM,MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,\r\n" + "PAN_NO,REF_EMP_ID,REF_REMARKS,REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,\r\n" + "SALARY_AMOUNT,LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,\r\n" + "PER_STATE_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ACTIVE,PER_CITY_CD,SHIFT_ID FROM EMP_MST WHERE EMP_ID = " + Integer.parseInt(ls_emp_id) +" AND IS_DELETE = 'N'";
+                sql = "SELECT COMP_CD,BRANCH_CD,EMP_ID,ACTIVE_STATUS,ENTRY_DT,FIRST_NM,MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,\r\n" + "PAN_NO,REF_EMP_ID,REF_REMARKS,REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,\r\n" + "SALARY_AMOUNT,LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,\r\n" + "PER_STATE_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ACTIVE,PER_CITY_CD,SHIFT_ID,SALARY_HEAD_CD FROM EMP_MST WHERE EMP_ID = " + Integer.parseInt(ls_emp_id) +" AND IS_DELETE = 'N'";
             } else {
-                sql = "SELECT COMP_CD,BRANCH_CD,EMP_ID,ACTIVE_STATUS,ENTRY_DT,FIRST_NM,MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,\r\n" + "PAN_NO,REF_EMP_ID,REF_REMARKS,REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,\r\n" + "SALARY_AMOUNT,LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,\r\n" + "PER_STATE_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ACTIVE,PER_CITY_CD,SHIFT_ID FROM EMP_MST WHERE EMP_ID = " + Integer.parseInt(ls_emp_id) + " AND ENTERED_BY = '" + userName + "' AND IS_DELETE = 'N'";
+                sql = "SELECT COMP_CD,BRANCH_CD,EMP_ID,ACTIVE_STATUS,ENTRY_DT,FIRST_NM,MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,\r\n" + "PAN_NO,REF_EMP_ID,REF_REMARKS,REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,\r\n" + "SALARY_AMOUNT,LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,\r\n" + "PER_STATE_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ACTIVE,PER_CITY_CD,SHIFT_ID,SALARY_HEAD_CD FROM EMP_MST WHERE EMP_ID = " + Integer.parseInt(ls_emp_id) + " AND ENTERED_BY = '" + userName + "' AND IS_DELETE = 'N'";
 
             }
 
@@ -262,7 +262,7 @@ public class getEmpList {
                 jOut.put("ACTIVE", NVL.StringNvl(rs.getString("ACTIVE")));
                 jOut.put("PER_CITY_CD", NVL.StringNvl(rs.getString("PER_CITY_CD")));
                 jOut.put("SHIFT_ID", NVL.StringNvl(rs.getString("SHIFT_ID")));
-                
+                jOut.put("SALARY_HEAD_CD", NVL.StringNvl(rs.getString("SALARY_HEAD_CD")));
                 JSONArray insuDtl  = new JSONArray();
                 insuDtl = getInsurance(con,Integer.parseInt(ls_emp_id));
                 System.out.println(insuDtl);
@@ -571,7 +571,14 @@ public class getEmpList {
                 LAST_MODIFIED_DT = Date.valueOf(jReuqest.getString("LAST_MODIFIED_DT"));  
                 		//(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("LAST_MODIFIED_DT"));
             }
-                        
+           // String EMP_TYPE = jReuqest.getString("EMP_TYPE");
+            int SALARY_HEAD_CD = 0;
+            if (jReuqest.getString("SALARY_HEAD_CD") == null || jReuqest.getString("SALARY_HEAD_CD").equals("")) {
+            	SALARY_HEAD_CD = 0;
+            } else {
+            	SALARY_HEAD_CD = jReuqest.getInt("SALARY_HEAD_CD");
+            }
+            
             JSONArray insuranceDelete = new JSONArray(jReuqest.getString("INSURANCELISTDELETE"));
             int i = 0;
             try {
@@ -625,7 +632,7 @@ public class getEmpList {
                  response = jOutPut.toString();
             } else {
                 JSONObject jOut = new JSONObject();
-                String sql = "INSERT INTO crm.emp_mst(COMP_CD,BRANCH_CD,EMP_ID,ENTRY_DT,ACTIVE_STATUS,FIRST_NM,\r\n" + "MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,\r\n" + "GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,PAN_NO,REF_EMP_ID,REF_REMARKS,\r\n" + "REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,\r\n" + "ACTIVE,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,SALARY_AMOUNT,\r\n" + "LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,PER_STATE_CD,PER_CITY_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ENTERED_BY,ENTERED_IP,ENTERED_DATE,LAST_MODIFIED_BY,LAST_MODOFIED_IP,LAST_MODIFIED_DT,SHIFT_ID)\r\n" + "VALUES\r\n" + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO crm.emp_mst(COMP_CD,BRANCH_CD,EMP_ID,ENTRY_DT,ACTIVE_STATUS,FIRST_NM,\r\n" + "MIDDEL_NM,LAST_NM,PROFILE_IMG,EMAIL_ID,INACTIVE_DT,BIRTH_DT,RELIGION_CD,\r\n" + "GENDER,BLOOD_GRP,MARRITAL_STATUS,HIGHEST_EDU,UNIQUE_ID,PAN_NO,REF_EMP_ID,REF_REMARKS,\r\n" + "REMARKS,PRIMARY_CONTACT,SECONDARY_CONTACT,RESUME,CONFIRMATION_DT,JOINIG_DT,\r\n" + "ACTIVE,RETIREMENT_DT,LEAVING_DT,GRADE_CD,DEPARTMENT_ID,DESIGNATION_ID,SALARY_AMOUNT,\r\n" + "LEAVING_REASON,COMP_REMARKS,CONTRACT_APPLICABLE,CONTRACT_TYPE,CONTRACT_SIGNED_DATE,PER_ADD_LINE_1,PER_ADD_LINE_2,PER_ADD_LINE_3,PER_COUNTRY_CD,PER_STATE_CD,PER_CITY_CD,PER_PIN_CODE,TEMP_ADD_LIINE_1,TEMP_ADD_LIINE_2,TEMP_ADD_LIINE_3,TEMP_COUNTRY_CD,TEMP_STATE_CD,TEMP_CITY_CD,TEMP_PIN_CODE,ENTERED_BY,ENTERED_IP,ENTERED_DATE,LAST_MODIFIED_BY,LAST_MODOFIED_IP,LAST_MODIFIED_DT,SHIFT_ID,SALARY_HEAD_CD)\r\n" + "VALUES\r\n" + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
                 preparedStatement.setString(1, COMP_CD);
                 preparedStatement.setString(2, BRANCH_CD);
@@ -686,7 +693,8 @@ public class getEmpList {
                 preparedStatement.setString(57, LAST_MODIFIED_BY);
                 preparedStatement.setString(58, LAST_MODOFIED_IP);
                 preparedStatement.setDate(59, LAST_MODIFIED_DT);
-                preparedStatement.setInt(60,SHIFT_ID);
+                preparedStatement.setInt(60,SHIFT_ID);                
+                preparedStatement.setInt(61,SALARY_HEAD_CD);
                 
                 int row = preparedStatement.executeUpdate();
 
@@ -953,7 +961,13 @@ public class getEmpList {
                 } else {
                     LAST_MODIFIED_DT = Date.valueOf(jReuqest.getString("LAST_MODIFIED_DT")); 
                     		//(Date) new SimpleDateFormat("YYYY-MM-DD").parse(jReuqest.getString("LAST_MODIFIED_DT"));
-                }            
+                }                
+                int SALARY_HEAD_CD = 0;
+                if (jReuqest.getString("SALARY_HEAD_CD") == null || jReuqest.getString("SALARY_HEAD_CD").equals("")) {
+                	SALARY_HEAD_CD = 0;
+                } else {
+                	SALARY_HEAD_CD = jReuqest.getInt("SALARY_HEAD_CD");
+                }
                 
                 JSONArray insuranceDelete = new JSONArray(jReuqest.getString("INSURANCELISTDELETE"));
                 int i = 0;
@@ -994,10 +1008,8 @@ public class getEmpList {
                     Utility.PrintMessage("Error in Update Board Member Details : " + e);
                    return response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
                 }
-                
-                
-                
-                String updateEmployee = "UPDATE crm.emp_mst\r\n" + 
+
+                String updateEmployee = "UPDATE emp_mst\r\n" + 
                 		"SET\r\n" + 
                 		"COMP_CD = ?,BRANCH_CD = ?,ACTIVE_STATUS = ?,FIRST_NM = ?,MIDDEL_NM = ?,LAST_NM = ?,PROFILE_IMG = ?,\r\n" + 
                 		"EMAIL_ID = ?,INACTIVE_DT = ?,BIRTH_DT = ?,RELIGION_CD = ?,GENDER = ?,BLOOD_GRP = ?,MARRITAL_STATUS = ?,\r\n" + 
@@ -1008,10 +1020,9 @@ public class getEmpList {
                 		"PER_ADD_LINE_3 = ?,PER_COUNTRY_CD = ?,PER_STATE_CD = ?,PER_CITY_CD = ?,PER_PIN_CODE = ?,TEMP_ADD_LIINE_1 = ?,\r\n" + 
                 		"TEMP_ADD_LIINE_2 = ?,TEMP_ADD_LIINE_3 = ?,TEMP_COUNTRY_CD = ?,TEMP_STATE_CD = ?,TEMP_CITY_CD = ?,\r\n" + 
                 		"TEMP_PIN_CODE = ?,LAST_MODIFIED_BY = ?,LAST_MODOFIED_IP = ?,\r\n" + 
-                		"LAST_MODIFIED_DT = ?,SHIFT_ID=? WHERE COMP_CD = ? AND EMP_ID = ?\r\n" + 
-                		"";
-                PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);
-                System.out.println(DESIGNATION_ID);
+                		"LAST_MODIFIED_DT = ?,SHIFT_ID=?,SALARY_HEAD_CD = ? WHERE COMP_CD = ? AND EMP_ID = ? ";
+                              
+                PreparedStatement preparedStatement = con.prepareStatement(updateEmployee);                
                 preparedStatement.setString(1, COMP_CD);
                 preparedStatement.setString(2, BRANCH_CD);                
                 preparedStatement.setString(3, ACTIVE_STATUS);
@@ -1066,9 +1077,13 @@ public class getEmpList {
                 preparedStatement.setString(52, LAST_MODIFIED_BY);
                 preparedStatement.setString(53, LAST_MODOFIED_IP);
                 preparedStatement.setDate(54, LAST_MODIFIED_DT);
-                preparedStatement.setInt(55, SHIFT_ID);	
-                preparedStatement.setString(56, COMP_CD);
-                preparedStatement.setInt(57, EMP_ID);                                
+                preparedStatement.setInt(55, SHIFT_ID);	                
+                preparedStatement.setInt(56, SALARY_HEAD_CD);                
+                preparedStatement.setString(57, COMP_CD);
+                preparedStatement.setInt(58, EMP_ID); 
+                
+                System.out.println(preparedStatement.toString());  
+                
                 int row = preparedStatement.executeUpdate();
                 
                 if (row == 0) {
@@ -1083,6 +1098,7 @@ public class getEmpList {
                 response = jOutPut.toString();
             }                                                                                              
         } catch (Exception e) {
+        	e.printStackTrace();
             Utility.PrintMessage("Error in Update Employee : " + e);
             response = "{\"STATUS_CD\":\"99\",\"MESSAGE\":\"Something went to wrong,Please try after some time.\"}";
         } finally {

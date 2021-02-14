@@ -478,9 +478,9 @@ public class getEmpList {
             }
             int DESIGNATION_ID = 0;
             if (jReuqest.getString("DESIGNATION_ID") == null || jReuqest.getString("DESIGNATION_ID").equals("")) {
-                DEPARTMENT_ID = 0;
+            	DESIGNATION_ID = 0;
             } else {
-                DEPARTMENT_ID = jReuqest.getInt("DESIGNATION_ID");
+            	DESIGNATION_ID = jReuqest.getInt("DESIGNATION_ID");
             }
             int SALARY_AMOUNT = 0;
             if (jReuqest.getString("SALARY_AMOUNT") == null || jReuqest.getString("SALARY_AMOUNT").equals("")) {

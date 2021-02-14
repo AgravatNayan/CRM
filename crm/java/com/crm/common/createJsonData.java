@@ -41,17 +41,20 @@ public class createJsonData {
 			String insertQuery = "INSERT INTO " + tableName + " (" + columnList + ") VALUES(" + ls_val + ")";
 			PreparedStatement preparedStatement = con.prepareStatement(insertQuery);
 			System.out.println(insertQuery);
-			for (int j = 0; j < columnNameList.size(); j++) {
+			for (int j = 0; j <columnNameList.size(); j++) {
 
 				if (dataTypeList.get(j).toUpperCase().equals("VARCHAR")) {
-					preparedStatement.setString(j + 1, inputJson.getString(columnNameList.get(j)));
+					preparedStatement.setString(j +1, inputJson.getString(columnNameList.get(j)));
 				} else if (dataTypeList.get(j).toUpperCase().equals("INT")) {
-					preparedStatement.setString(j + 1, inputJson.getString(columnNameList.get(j)));
+					preparedStatement.setString(j+1, inputJson.getString(columnNameList.get(j)));
 				} else if (dataTypeList.get(j).toUpperCase().equals("DATE")) {
-					preparedStatement.setString(j + 1, inputJson.getString(columnNameList.get(j)));
+					preparedStatement.setString(j+1, inputJson.getString(columnNameList.get(j)));
+				} else if (dataTypeList.get(j).toUpperCase().equals("CHAR")) {
+					preparedStatement.setString(j+1, inputJson.getString(columnNameList.get(j)));
 				}
+				//System.out.println((j+1)+"----"+inputJson.getString(columnNameList.get(j)));
 			}
-
+			System.out.println(preparedStatement);	
 			int row = preparedStatement.executeUpdate();
 			int transactionStatus = 0;
 			if (row == 0) {
@@ -63,7 +66,7 @@ public class createJsonData {
 			}
 			
 			if (transactionStatus == 1 ) {
-				response.put("STATUS","0");
+				response.put("STATUS_CD","0");
 				response.put("MESSAGE", "Record Sucessfully Inserted");
 			} 
 			

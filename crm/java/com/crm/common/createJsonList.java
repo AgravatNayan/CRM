@@ -11,6 +11,7 @@ import com.crm.utility.Utility;
 import com.crm.utility.getBranch;
 import com.crm.utility.getDepartment;
 import com.crm.utility.getDesignation;
+import com.crm.utility.getEmployeeName;
 
 public class createJsonList {
 	
@@ -25,6 +26,8 @@ public class createJsonList {
 		int		i				= 0;
 		JSONObject inputJson	= null;
 		JSONArray mainJson	= new JSONArray();
+		String empName = null;
+		
 		try {
 			ls_query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+schemaName+"' AND TABLE_NAME = '"+tableName+"'";
 			stmt = con.createStatement();
@@ -54,9 +57,15 @@ public class createJsonList {
 			while (buffer.next()) {		
 				inputJson = new JSONObject();
 				for(int j=0;j<mylist.size();j++) {
+					if (mylist.get(j).equals("EMP_ID")) {
+						System.out.println(Integer.parseInt(buffer.getString(mylist.get(j))));
+						empName = getEmployeeName.getEmpName(con,Integer.parseInt(buffer.getString(mylist.get(j))));
+					}
 					inputJson.put(mylist.get(j),buffer.getString(mylist.get(j)));					
 				}
+				inputJson.put("EMP_NM",empName);
 				mainJson.put(inputJson);
+				empName = "";
 			}						
 		} catch (Exception e) {
 			Utility.PrintMessage("Error Whilw createJsonList Of table :"+tableName);

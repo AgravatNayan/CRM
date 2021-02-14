@@ -85,6 +85,7 @@ public class leaveService {
 		JSONObject response = new JSONObject();
 		String userName = input.getString("USERNAME");
 		String createFlag = input.getString("CREATE_FLAG");
+		requestData = input.getJSONObject("REQUEST_DATA");
 		try {
 			if (createFlag.equalsIgnoreCase("Y")) {
 				response = createJsonData.createData(con, requestData.toString(), "emp_leave_mst");

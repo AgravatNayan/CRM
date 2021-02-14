@@ -579,6 +579,18 @@ public class CrmApplication {
                 } catch (Exception e) {
                     System.out.println("Get Employee Detail :" + e);
                 }                                     
+            } else if (ls_action.equals("GETSALARYAMT")) { // Get Salary Detail Details
+                try {
+                    ls_output = getEmpWiseSalary.getEmpSalaryAmtDtl(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Get Employee Salary Detail Details :" + e);
+                }                                     
+            } else if (ls_action.equals("SALARYPROCESS")) { // Get Salary Process
+                try {
+                    ls_output = getEmpWiseSalary.insertEmpSalary(con, input).toString();
+                } catch (Exception e) {
+                    System.out.println("Salary Process :" + e);
+                }                                     
             } else {
                 ls_output = "Kindly check your header action";
             }                                                                                                
